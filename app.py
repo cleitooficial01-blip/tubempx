@@ -64,11 +64,6 @@ def handle_single_video(info, url):
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept-Language': 'en-US,en;q=0.9',
         },
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web'],
-            }
-        },
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         full_info = ydl.extract_info(url, download=False)
@@ -134,11 +129,6 @@ def get_video_info():
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 'Accept-Language': 'en-US,en;q=0.9',
             },
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android', 'web'],
-                }
-            },
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -181,11 +171,6 @@ def download():
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Accept-Language': 'en-US,en;q=0.9',
                 },
-                'extractor_args': {
-                    'youtube': {
-                        'player_client': ['android', 'web'],
-                    }
-                },
             }
         else:
             if format_id:
@@ -198,11 +183,6 @@ def download():
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                         'Accept-Language': 'en-US,en;q=0.9',
                     },
-                    'extractor_args': {
-                        'youtube': {
-                            'player_client': ['android', 'web'],
-                        }
-                    },
                 }
             else:
                 ydl_opts = {
@@ -213,11 +193,6 @@ def download():
                     'http_headers': {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                         'Accept-Language': 'en-US,en;q=0.9',
-                    },
-                    'extractor_args': {
-                        'youtube': {
-                            'player_client': ['android', 'web'],
-                        }
                     },
                 }
 
