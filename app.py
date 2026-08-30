@@ -61,8 +61,14 @@ def handle_single_video(info, url):
         'no_warnings': True,
         'age_limit': None,
         'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
             'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://www.youtube.com/',
+        },
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['mediaconnect'],
+            }
         },
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -126,8 +132,14 @@ def get_video_info():
             'age_limit': None,
             'cookiesfrombrowser': None,
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://www.youtube.com/',
+            },
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['mediaconnect'],
+                }
             },
         }
 
@@ -168,8 +180,14 @@ def download():
                 }],
                 'quiet': True,
                 'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                     'Accept-Language': 'en-US,en;q=0.9',
+                    'Referer': 'https://www.youtube.com/',
+                },
+                'extractor_args': {
+                    'youtube': {
+                        'player_client': ['mediaconnect'],
+                    }
                 },
             }
         else:
@@ -180,8 +198,14 @@ def download():
                     'merge_output_format': 'mp4',
                     'quiet': True,
                     'http_headers': {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                         'Accept-Language': 'en-US,en;q=0.9',
+                        'Referer': 'https://www.youtube.com/',
+                    },
+                    'extractor_args': {
+                        'youtube': {
+                            'player_client': ['mediaconnect'],
+                        }
                     },
                 }
             else:
@@ -191,8 +215,14 @@ def download():
                     'merge_output_format': 'mp4',
                     'quiet': True,
                     'http_headers': {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                         'Accept-Language': 'en-US,en;q=0.9',
+                        'Referer': 'https://www.youtube.com/',
+                    },
+                    'extractor_args': {
+                        'youtube': {
+                            'player_client': ['mediaconnect'],
+                        }
                     },
                 }
 
