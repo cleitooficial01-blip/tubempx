@@ -61,9 +61,13 @@ def handle_single_video(info, url):
         'no_warnings': True,
         'age_limit': None,
         'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+            'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Referer': 'https://www.youtube.com/',
+        },
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android'],
+            }
         },
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -126,9 +130,13 @@ def get_video_info():
             'extract_flat': 'in_playlist',
             'age_limit': None,
             'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
                 'Accept-Language': 'en-US,en;q=0.9',
-                'Referer': 'https://www.youtube.com/',
+            },
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android'],
+                }
             },
         }
 
@@ -169,9 +177,13 @@ def download():
                 }],
                 'quiet': True,
                 'http_headers': {
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                    'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
                     'Accept-Language': 'en-US,en;q=0.9',
-                    'Referer': 'https://www.youtube.com/',
+                },
+                'extractor_args': {
+                    'youtube': {
+                        'player_client': ['android'],
+                    }
                 },
             }
         else:
@@ -182,9 +194,13 @@ def download():
                     'merge_output_format': 'mp4',
                     'quiet': True,
                     'http_headers': {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                        'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
                         'Accept-Language': 'en-US,en;q=0.9',
-                        'Referer': 'https://www.youtube.com/',
+                    },
+                    'extractor_args': {
+                        'youtube': {
+                            'player_client': ['android'],
+                        }
                     },
                 }
             else:
@@ -194,9 +210,13 @@ def download():
                     'merge_output_format': 'mp4',
                     'quiet': True,
                     'http_headers': {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+                        'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
                         'Accept-Language': 'en-US,en;q=0.9',
-                        'Referer': 'https://www.youtube.com/',
+                    },
+                    'extractor_args': {
+                        'youtube': {
+                            'player_client': ['android'],
+                        }
                     },
                 }
 
