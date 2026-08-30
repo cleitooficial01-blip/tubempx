@@ -65,11 +65,6 @@ def handle_single_video(info, url):
             'Accept-Language': 'en-US,en;q=0.9',
             'Referer': 'https://www.youtube.com/',
         },
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['mediaconnect'],
-            }
-        },
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         full_info = ydl.extract_info(url, download=False)
@@ -130,16 +125,10 @@ def get_video_info():
             'no_warnings': True,
             'extract_flat': 'in_playlist',
             'age_limit': None,
-            'cookiesfrombrowser': None,
             'http_headers': {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                 'Accept-Language': 'en-US,en;q=0.9',
                 'Referer': 'https://www.youtube.com/',
-            },
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['mediaconnect'],
-                }
             },
         }
 
@@ -184,11 +173,6 @@ def download():
                     'Accept-Language': 'en-US,en;q=0.9',
                     'Referer': 'https://www.youtube.com/',
                 },
-                'extractor_args': {
-                    'youtube': {
-                        'player_client': ['mediaconnect'],
-                    }
-                },
             }
         else:
             if format_id:
@@ -202,11 +186,6 @@ def download():
                         'Accept-Language': 'en-US,en;q=0.9',
                         'Referer': 'https://www.youtube.com/',
                     },
-                    'extractor_args': {
-                        'youtube': {
-                            'player_client': ['mediaconnect'],
-                        }
-                    },
                 }
             else:
                 ydl_opts = {
@@ -218,11 +197,6 @@ def download():
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
                         'Accept-Language': 'en-US,en;q=0.9',
                         'Referer': 'https://www.youtube.com/',
-                    },
-                    'extractor_args': {
-                        'youtube': {
-                            'player_client': ['mediaconnect'],
-                        }
                     },
                 }
 
