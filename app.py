@@ -60,6 +60,15 @@ def handle_single_video(info, url):
         'quiet': True,
         'no_warnings': True,
         'age_limit': None,
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+        },
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web'],
+            }
+        },
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         full_info = ydl.extract_info(url, download=False)
@@ -121,6 +130,15 @@ def get_video_info():
             'extract_flat': 'in_playlist',
             'age_limit': None,
             'cookiesfrombrowser': None,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9',
+            },
+            'extractor_args': {
+                'youtube': {
+                    'player_client': ['android', 'web'],
+                }
+            },
         }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -159,6 +177,15 @@ def download():
                     'preferredquality': '192',
                 }],
                 'quiet': True,
+                'http_headers': {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                },
+                'extractor_args': {
+                    'youtube': {
+                        'player_client': ['android', 'web'],
+                    }
+                },
             }
         else:
             if format_id:
@@ -167,6 +194,15 @@ def download():
                     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
                     'merge_output_format': 'mp4',
                     'quiet': True,
+                    'http_headers': {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                    },
+                    'extractor_args': {
+                        'youtube': {
+                            'player_client': ['android', 'web'],
+                        }
+                    },
                 }
             else:
                 ydl_opts = {
@@ -174,6 +210,15 @@ def download():
                     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
                     'merge_output_format': 'mp4',
                     'quiet': True,
+                    'http_headers': {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                    },
+                    'extractor_args': {
+                        'youtube': {
+                            'player_client': ['android', 'web'],
+                        }
+                    },
                 }
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
