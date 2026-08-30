@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tube MPX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --ink: #0a0a0a;
+            --ink-soft: #1a1a1a;
+            --paper: #ff1a2e;
+            --panel: #ffffff;
+            --brass: #ff0033;
+            --brass-soft: #ff3355;
+            --signal: #ff3355;
+            --text-dark: #111111;
+            --text-mid: #5c5c5c;
+            --line: #ff5b6b;
+
+            --font-display: 'Big Shoulders Display', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            background: #ff1a2e;
+            background-image:
+                radial-gradient(circle at 85% -10%, rgba(255,60,60,0.4), transparent 55%),
+                radial-gradient(circle at 0% 100%, rgba(120,0,10,0.5), transparent 60%);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: inherit; cursor: pointer; border: none; }
+        :focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+        }
+
+        /* --- SHARED --- */
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--brass);
+            font-weight: 600;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(28px, 4vw, 42px);
+            letter-spacing: -0.01em;
+            text-align: center;
+            color: var(--text-dark);
+            margin: 0 0 48px;
+            -webkit-text-stroke: 1px #ffffff;
+            paint-order: stroke fill;
+        }
+        .section-title span { color: var(--brass); }
+
+        /* --- HERO / HEADER --- */
+        .hero-section {
+            color: var(--text-dark);
+        }
+        .header-bar {
+            background: #ffffff;
+            border-bottom: 1px solid var(--line);
+        }
+        header {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 40px;
+        }
+        .logo {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 26px;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+        }
+        .logo i { color: var(--brass); font-size: 29px; }
+        .logo span { color: var(--brass); }
+        .logo .logo-text { color: var(--text-dark); }
+        .logo .logo-accent { color: var(--brass); }
+        nav { display: flex; gap: 28px; }
+        nav a {
+            font-size: 13.5px;
+            font-weight: 500;
+            color: var(--text-mid);
+            transition: color 0.2s;
+        }
+        nav a:hover { color: var(--text-dark); }
+        .lang-select {
+            font-family: var(--font-mono);
+            font-size: 12.5px;
+            color: var(--text-mid);
+            border: 1px solid var(--line);
+            padding: 7px 13px;
+            border-radius: 100px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            cursor: pointer;
+        }
+        .lang-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 160px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+        .lang-dropdown.show { display: block; }
+        .lang-option {
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lang-option:hover { background: #f5f5f5; }
+        .lang-option.active { background: #fff0f0; color: var(--brass); font-weight: 600; }
+
+        .hero-content {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 36px 40px 50px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: end;
+            text-align: center;
+        }
+        .badge-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.06em;
+            color: var(--brass);
+            background: #ffffff;
+            border: 1px solid rgba(216,31,43,0.2);
+            padding: 7px 14px;
+            border-radius: 100px;
+            margin-bottom: 22px;
+        }
+        .hero-content h1 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(38px, 5.2vw, 60px);
+            line-height: 1.02;
+            letter-spacing: -0.01em;
+            margin-bottom: 18px;
+            text-shadow: 0 0 3px #ffffff, 0 0 6px #ffffff, 0 0 9px rgba(255,255,255,0.7);
+            -webkit-text-stroke: 1px #ffffff;
+            paint-order: stroke fill;
+        }
+        .hero-content h1 span { color: var(--brass); }
+        .hero-content > p {
+            font-size: 16px;
+            color: var(--text-mid);
+            max-width: 480px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .search-box {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 8px 8px 8px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .icon-link { color: var(--text-mid); font-size: 15px; flex-shrink: 0; }
+        .input-row {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        .search-box input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            padding: 12px 0;
+            font-family: var(--font-body);
+        }
+        .search-box input::placeholder { color: #9c9c9c; }
+        .search-box input:focus { outline: none; }
+        .btn-colar {
+            background: #ffffff;
+            border: 1px solid var(--line);
+            color: var(--text-dark);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 12px 16px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-colar:hover { background: #efeeec; }
+        .btn-colar-mobile { display: none; }
+
+        /* Logo animado + estrelas: aparecem em qualquer tela, acima do título */
+        .hero-logo-wrap {
+            position: relative;
+            width: 161px;
+            margin: 0 auto 48px;
+        }
+        .hero-mobile-logo {
+            display: block;
+            margin: 0 auto 48px;
+            width: 161px;
+            height: auto;
+            animation: logoFloat 2.4s ease-in-out infinite;
+        }
+        .hero-logo-wrap .hero-mobile-logo { margin: 0; }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+        .star-fx {
+            display: inline-block;
+            position: absolute;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 14px rgba(255,60,60,0.6);
+            animation: starTwinkle 3.2s ease-in-out infinite;
+            pointer-events: none;
+        }
+        .star-fx.s1 { top: -14px;  left: -10px;  font-size: 14px; animation-delay: 0s; }
+        .star-fx.s2 { top: 6px;    right: -18px; font-size: 10px; animation-delay: 0.6s; }
+        .star-fx.s3 { bottom: -6px; left: -20px;  font-size: 12px; animation-delay: 1.2s; }
+        .star-fx.s4 { top: 40%;    right: -26px; font-size: 16px; animation-delay: 1.8s; }
+        .star-fx.s5 { bottom: -16px; right: 10px; font-size: 11px; animation-delay: 2.4s; }
+        .star-fx.s6 { top: -18px;  right: 30%;    font-size: 9px;  animation-delay: 3.0s; }
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.15); }
+        }
+        .btn-baixar-main {
+            background: var(--brass);
+            color: #fff;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 12px 20px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.15s;
+            white-space: nowrap;
+            position: relative;
+            animation: pulse-btn 2s ease-in-out infinite;
+        }
+        @keyframes pulse-btn {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,0,51,0.55); }
+            50% { box-shadow: 0 0 0 10px rgba(255,0,51,0); }
+        }
+        .btn-baixar-main:hover { background: var(--brass-soft); transform: translateY(-1px); }
+
+        .supported-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: #0a0a0a;
+            background: #ffffff;
+            border: 1px solid var(--line);
+            padding: 5px 11px;
+            border-radius: 5px;
+        }
+
+
+        /* --- RESULTS SECTION --- */
+        .results-container {
+            display: none;
+            max-width: 1000px;
+            margin: 40px auto 40px;
+            background: var(--panel);
+            border-radius: 18px;
+            box-shadow: 0 24px 48px -20px rgba(0,0,0,0.6);
+            padding: 34px;
+            gap: 34px;
+            position: relative;
+            z-index: 2;
+        }
+        .results-container.visible { display: flex; }
+        .video-info { width: 40%; }
+        .thumbnail {
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, var(--ink), var(--ink-soft));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .play-btn {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.25);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 16px;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--brass);
+            background: #f7f6f4;
+            border: 1px solid var(--line);
+            padding: 5px 11px;
+            border-radius: 100px;
+            margin-bottom: 10px;
+        }
+        .video-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 19px;
+            line-height: 1.25;
+            margin-bottom: 10px;
+        }
+        .video-meta { display: flex; gap: 16px; font-size: 13px; color: var(--text-mid); }
+        .video-meta span { display: flex; align-items: center; gap: 6px; }
+
+        .download-options { width: 60%; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+        .tab {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-mid);
+            padding: 9px 18px;
+            border-radius: 8px;
+            display: flex; align-items: center; gap: 7px;
+            background: #f7f6f4;
+        }
+        .tab.active { background: var(--brass); color: #fff; }
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            font-family: var(--font-mono);
+            font-size: 10.5px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-mid);
+            text-align: left;
+            padding: 0 4px 10px;
+            font-weight: 600;
+        }
+        tbody td {
+            padding: 13px 4px;
+            border-top: 1px solid var(--line);
+            font-size: 14px;
+        }
+        tbody td:first-child { font-weight: 600; font-family: var(--font-mono); font-size: 13px; }
+        tbody td:nth-child(2) { color: var(--text-mid); font-family: var(--font-mono); font-size: 12.5px; }
+        tbody td:nth-child(3) { color: var(--text-mid); font-family: var(--font-mono); font-size: 12.5px; }
+        .btn-baixar-small {
+            background: var(--brass);
+            color: #fff;
+            border: 1px solid var(--brass);
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 7px;
+            display: flex; align-items: center; gap: 6px;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .btn-baixar-small:hover { background: var(--brass-soft); border-color: var(--brass-soft); }
+        .btn-baixar-small:active,
+        .btn-baixar-small.clicked { background: #ffffff; color: var(--text-dark); border-color: var(--line); }
+
+        /* --- STEPS SECTION --- */
+        .steps-wrap { padding: 100px 40px 90px; max-width: 1100px; margin: 0 auto; }
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            position: relative;
+        }
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 26px; left: 8%; right: 8%;
+            height: 1px;
+            background: repeating-linear-gradient(90deg, #e0e0e0 0 8px, transparent 8px 16px);
+        }
+        .step { flex: 1; text-align: center; position: relative; }
+        .step-icon {
+            width: 54px; height: 54px;
+            background: var(--panel);
+            border: 1px solid #e0e0e0;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            font-size: 17px;
+            color: var(--text-dark);
+            z-index: 1;
+        }
+        .step-number {
+            position: absolute;
+            top: -8px; right: -8px;
+            width: 22px; height: 22px;
+            background: var(--brass);
+            color: var(--ink);
+            border-radius: 50%;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .step h3 { font-family: var(--font-display); font-size: 19px; font-weight: 700; margin-bottom: 8px; }
+        .step p { font-size: 13.5px; color: #ffffff; max-width: 220px; margin: 0 auto; line-height: 1.5; }
+
+        /* --- PLATFORMS SECTION --- */
+        .platforms-container {
+            background: #ffffff;
+            padding: 28px 40px;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+        }
+        .platforms-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--text-dark);
+            margin-bottom: 26px;
+        }
+        .platforms-list {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .platform-btn {
+            display: flex; align-items: center; gap: 6px;
+            padding: 8px 14px;
+            border-radius: 100px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-dark);
+            background: #f5f5f5;
+            border: 1px solid var(--line);
+            transition: transform 0.15s, background 0.2s;
+        }
+        .platform-btn:hover { transform: translateY(-2px); background: #ebebeb; }
+        .platform-btn.youtube { background: #FF0000; border-color: #FF0000; color: #ffffff; }
+        .platform-btn.youtube i { color: #ffffff; }
+        .platform-btn.instagram { background: linear-gradient(45deg, #FEDA75, #FA7E1E, #D62976, #962FBF, #4F5BD5); border-color: transparent; color: #ffffff; }
+        .platform-btn.instagram i { color: #ffffff; }
+        .platform-btn.tiktok { background: #000000; border-color: #000000; color: #ffffff; }
+        .platform-btn.tiktok i { color: #ffffff; }
+        .platform-btn.kwai { background: #FF7A00; border-color: #FF7A00; color: #ffffff; }
+        .platform-btn.kwai i { color: #ffffff; }
+
+        /* --- FEATURES SECTION --- */
+        .features-container {
+            max-width: 1100px;
+            margin: 90px auto;
+            padding: 0 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 26px;
+        }
+        .feature {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 26px 22px;
+        }
+        .feature-icon {
+            width: 40px; height: 40px;
+            border-radius: 9px;
+            background: var(--brass);
+            color: #ffffff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        .feature-text h4 { font-family: var(--font-display); font-size: 16.5px; font-weight: 700; margin-bottom: 6px; }
+        .feature-text p { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+
+        /* --- ABOUT SECTION --- */
+        .about-container {
+            max-width: 780px;
+            margin: 0 auto 90px;
+            padding: 0 40px;
+            text-align: center;
+        }
+        .about-container h2 {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(26px, 3.6vw, 36px);
+            margin-bottom: 16px;
+            -webkit-text-stroke: 1px #ffffff;
+            paint-order: stroke fill;
+        }
+        .about-container h2 span { color: var(--brass); }
+        .about-container > p {
+            font-size: 15px;
+            color: #ffffff;
+            line-height: 1.65;
+            margin-bottom: 40px;
+        }
+        .about-checklist {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            text-align: left;
+        }
+        .about-item { display: flex; gap: 14px; align-items: flex-start; }
+        .about-check {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: var(--ink);
+            color: var(--brass-soft);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        .about-item h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 3px; }
+        .about-item p { font-size: 13px; color: #ffffff; }
+
+        /* --- DEVICE SECTION --- */
+        .device-container {
+            max-width: 900px;
+            margin: 0 auto 90px;
+            padding: 34px 40px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+        .device-emoji { font-size: 34px; }
+        .device-text h4 { font-family: var(--font-display); font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+        .device-text p { font-size: 13.5px; color: var(--text-mid); line-height: 1.55; }
+
+        /* --- FAQ SECTION --- */
+        .faq-container {
+            max-width: 720px;
+            margin: 0 auto 110px;
+            padding: 0 40px;
+        }
+        .faq-item {
+            border-bottom: 1px solid var(--line);
+            padding: 20px 2px;
+        }
+        .faq-item summary {
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::after {
+            content: '+';
+            font-family: var(--font-mono);
+            font-size: 18px;
+            color: var(--brass);
+            transition: transform 0.2s;
+        }
+        .faq-item[open] summary::after { transform: rotate(45deg); }
+        .faq-item p {
+            margin-top: 12px;
+            font-size: 13.5px;
+            color: var(--text-mid);
+            line-height: 1.55;
+        }
+
+        /* --- FOOTER --- */
+        footer { background: var(--ink); color: rgba(255,255,255,0.7); padding: 64px 40px 0; }
+        .footer-top {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 30px;
+            padding-bottom: 40px;
+        }
+        .footer-brand .logo { color: #fff; margin-bottom: 15px; }
+        .footer-brand .logo .logo-text { color: #fff; }
+        .footer-brand .logo .logo-accent { color: var(--brass-soft); }
+        .footer-brand p { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.5); max-width: 280px; }
+        .footer-col h4 { font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: #fff; font-size: 12px; margin-bottom: 18px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { color: rgba(255,255,255,0.55); font-size: 13px; transition: color 0.2s; }
+        .footer-col ul li a:hover { color: #fff; }
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 25px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+        }
+        .footer-bottom-left { display: flex; align-items: center; gap: 12px; }
+        .footer-bottom-left .logo { font-size: 16px; color: #fff; }
+        .footer-bottom-left .logo .logo-text { color: #fff; }
+        .footer-bottom-left .logo .logo-accent { color: var(--brass-soft); }
+        .footer-disclaimer { font-size: 12px; color: rgba(255,255,255,0.4); max-width: 500px; line-height: 1.5; }
+        .footer-copyright { font-family: var(--font-mono); font-size: 11.5px; color: rgba(255,255,255,0.4); }
+        .footer-lang {
+            font-family: var(--font-mono);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            header { flex-direction: row; flex-wrap: nowrap; gap: 10px; padding: 32px 20px 10px; }
+            nav { display: none; }
+            .hero-content { grid-template-columns: 1fr; padding: 110px 22px 60px; text-align: center; }
+            .hero-content h1 { font-size: 42px; -webkit-text-stroke: 1px #ffffff; paint-order: stroke fill; }
+            .hero-p-desktop-only { display: none; }
+            .hero-lead-text { top: 0 !important; margin-top: 60px !important; margin-bottom: 28px !important; }
+            .search-box { flex-direction: column; border-radius: 16px; padding: 14px; align-items: stretch; }
+            .search-box input { width: 100%; padding: 10px 100px 10px 0; }
+            .btn-colar { display: none; }
+            .btn-baixar-main { width: 100%; justify-content: center; padding: 16px 20px; }
+            .btn-colar-mobile {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: auto;
+                height: 38px;
+                padding: 0 14px;
+                background: #e6e6e6;
+                border: 1px solid #b30000;
+                border-radius: 10px;
+                color: #b30000;
+                font-size: 13px;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+            .results-container { flex-direction: column; padding: 22px; margin-top: -30px; }
+            .video-info, .download-options { width: 100%; }
+            .steps-wrap { padding: 70px 22px; }
+            .steps-container { flex-direction: column; gap: 40px; align-items: center; }
+            .steps-container::before { display: none; }
+            .features-container { grid-template-columns: 1fr; margin: 60px auto; }
+            .about-checklist { grid-template-columns: 1fr; }
+            .device-container { flex-direction: column; text-align: center; }
+            .footer-top { grid-template-columns: 1fr; text-align: center; }
+            .footer-brand p { max-width: 100%; margin: 0 auto; }
+            .footer-brand .logo { justify-content: center; }
+            .footer-col ul { padding: 0; }
+
+            .platforms-container { padding: 22px 20px; margin: 0 20px 32px; }
+            .platforms-list { flex-wrap: nowrap; gap: 6px; }
+            .platform-btn { flex: 1; justify-content: center; padding: 8px 4px; font-size: 10px; gap: 4px; white-space: nowrap; }
+            .features-container { padding: 0 20px; margin: 50px auto; gap: 16px; }
+            .about-container { padding: 0 20px; margin: 0 auto 60px; }
+            .device-container { padding: 26px 20px; margin: 0 20px 60px; text-align: center; gap: 16px; }
+            .faq-container { padding: 0 20px; margin: 0 auto 70px; }
+            footer { padding: 48px 20px 0; }
+        }
+
+        /* Telas pequenas de celular */
+        @media (max-width: 480px) {
+            header { padding: 28px 18px 10px; }
+            .logo { font-size: 24px; }
+            .logo i { font-size: 28px; }
+            .lang-select { font-size: 11px; padding: 6px 10px; }
+
+            .hero-content { padding: 28px 16px 44px; gap: 26px; }
+            .badge-top { font-size: 10.5px; padding: 6px 12px; margin-bottom: 16px; }
+            .hero-content h1 { font-size: 32px; margin-bottom: 14px; text-shadow: 0 0 2px #ffffff, 0 0 4px #ffffff, 0 0 6px rgba(255,255,255,0.7); -webkit-text-stroke: 1px #ffffff; paint-order: stroke fill; }
+            .hero-content > p { font-size: 16px; margin-bottom: 24px; }
+            .search-box { padding: 12px; border-radius: 14px; gap: 8px; }
+            .search-box input { font-size: 14px; padding: 8px 92px 8px 4px; }
+            .btn-colar, .btn-baixar-main { padding: 12px 14px; font-size: 13px; }
+            .btn-baixar-main { padding: 16px 14px; }
+            .btn-colar-mobile { height: 34px; padding: 0 10px; font-size: 12px; right: 4px; }
+            .supported-tags { gap: 6px; margin-top: 18px; }
+            .tag { font-size: 10.5px; padding: 4px 9px; }
+
+            .results-container { padding: 16px; margin: 24px auto 24px; }
+
+            .section-title { font-size: 26px; margin-bottom: 32px; -webkit-text-stroke: 0.75px #ffffff; }
+
+            .platforms-container { padding: 20px 16px; margin: 0 16px 26px; }
+            .platforms-title { font-size: 18px; margin-bottom: 18px; }
+            .platforms-list { flex-wrap: nowrap; gap: 4px; }
+            .platform-btn { flex: 1; justify-content: center; font-size: 9px; padding: 7px 2px; gap: 3px; }
+
+            .steps-wrap { padding: 56px 18px; }
+            .step p { max-width: 180px; font-size: 13px; }
+
+            .features-container { padding: 0 16px; margin: 40px auto; gap: 14px; }
+            .feature { padding: 20px 18px; }
+
+            .about-container { padding: 0 16px; margin: 0 auto 48px; }
+            .about-container > p { font-size: 14px; margin-bottom: 28px; }
+            .about-item p, .about-item h4 { font-size: 13px; }
+
+            .device-container { padding: 22px 16px; margin: 0 16px 48px; }
+            .device-emoji { font-size: 28px; }
+            .device-text h4 { font-size: 15.5px; }
+            .device-text p { font-size: 13px; }
+
+            .faq-container { padding: 0 16px; margin: 0 auto 56px; }
+            .faq-item { padding: 16px 2px; }
+            .faq-item summary { font-size: 14px; }
+            .faq-item p { font-size: 13px; }
+
+            footer { padding: 40px 16px 0; }
+            .footer-top { gap: 26px; padding-bottom: 30px; }
+            .footer-bottom { padding: 20px 0; }
+            .footer-disclaimer { font-size: 11.5px; }
+        }
+
+        /* --- PLAYLIST SECTION --- */
+        .playlist-container {
+            display: none;
+            max-width: 1000px;
+            margin: 40px auto;
+            background: var(--panel);
+            border-radius: 18px;
+            box-shadow: 0 24px 48px -20px rgba(0,0,0,0.6);
+            padding: 34px;
+            position: relative;
+            z-index: 2;
+        }
+        .playlist-container.visible { display: block; }
+        .playlist-header {
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        .playlist-header h2 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .playlist-count {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-mid);
+        }
+        .playlist-videos {
+            display: grid;
+            gap: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .playlist-video-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: #f7f6f4;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            border: 1px solid var(--line);
+        }
+        .playlist-video-item:hover {
+            transform: translateY(-2px);
+            background: #ebebeb;
+        }
+        .playlist-video-thumb {
+            width: 140px;
+            height: 80px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .playlist-video-index {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .playlist-video-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .playlist-video-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .playlist-video-duration {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-mid);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="header-bar">
+        <header>
+            <a href="#" class="logo">
+                <i class="fa-brands fa-youtube"></i> <span class="logo-text">Tube<span class="logo-accent">MPX</span></span>
+            </a>
+            <nav>
+                <a href="#">Baixar vídeos do YouTube grátis</a>
+                <a href="#">Baixar Shorts do YouTube</a>
+                <a href="#">Converter para MP3</a>
+            </nav>
+            <div class="header-actions">
+                <div class="lang-select" id="langSelect">
+                    <i class="fa-solid fa-globe"></i> <span id="currentLang">PT</span> <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+                    <div class="lang-dropdown" id="langDropdown">
+                        <div class="lang-option" data-lang="pt">🇧🇷 Português</div>
+                        <div class="lang-option" data-lang="en">🇺🇸 English</div>
+                        <div class="lang-option" data-lang="es">🇪🇸 Español</div>
+                        <div class="lang-option" data-lang="fr">🇫🇷 Français</div>
+                        <div class="lang-option" data-lang="de">🇩🇪 Deutsch</div>
+                        <div class="lang-option" data-lang="it">🇮🇹 Italiano</div>
+                        <div class="lang-option" data-lang="hi">🇮🇳 हिन्दी</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        </div>
+
+        <div class="hero-content">
+            <div style="text-align: center;">
+                <div class="hero-logo-wrap">
+                <img src="data:image/png;base64,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" alt="YouTube" class="hero-mobile-logo">
+                    <span class="star-fx s1"><i class="fa-solid fa-star"></i></span>
+                    <span class="star-fx s2"><i class="fa-solid fa-star"></i></span>
+                    <span class="star-fx s3"><i class="fa-solid fa-star"></i></span>
+                    <span class="star-fx s4"><i class="fa-solid fa-star"></i></span>
+                    <span class="star-fx s5"><i class="fa-solid fa-star"></i></span>
+                    <span class="star-fx s6"><i class="fa-solid fa-star"></i></span>
+                </div>
+                <h1 style="font-weight: 900; font-size: clamp(44px, 10.4vw, 60px); position: relative; top: -7px;">Baixe vídeos do <span>YouTube</span> grátis</h1>
+                <p class="hero-lead-text" style="color: #ffffff; position: relative; top: -24px;">Cole o link do vídeo do YouTube abaixo<span class="hero-p-desktop-only"> e baixe em diferentes formatos e qualidades</span>.</p>
+
+                <div class="search-box">
+                    <div class="input-row">
+                        <i class="fa-solid fa-link icon-link"></i>
+                        <input type="text" placeholder="Cole o link do vídeo do YouTube aqui...">
+                        <button class="btn-colar-mobile"><i class="fa-regular fa-clipboard"></i> Colar</button>
+                    </div>
+                    <button class="btn-colar"><i class="fa-regular fa-clipboard"></i> Colar</button>
+                    <button class="btn-baixar-main" id="btnBaixarPrincipal"><i class="fa-solid fa-download"></i> Baixar</button>
+                </div>
+
+                <div class="supported-tags">
+                    <span class="tag">MP4</span>
+                    <span class="tag">MP3</span>
+                    <span class="tag">WEBM</span>
+                    <span class="tag">HD</span>
+                    <span class="tag">4K</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTS SECTION -->
+    <div class="results-container" id="resultsContainer">
+        <div class="video-info">
+            <div class="thumbnail">
+                <div class="play-btn"><i class="fa-solid fa-play"></i></div>
+            </div>
+            <div class="status-badge"><i class="fa-regular fa-circle-check"></i> Vídeo encontrado</div>
+            <h2 class="video-title">Natureza Incrível 4K - Paisagens deslumbrantes</h2>
+            <div class="video-meta">
+                <span><i class="fa-regular fa-clock"></i> 03:45</span>
+                <span><i class="fa-regular fa-eye"></i> 1.2M visualizações</span>
+            </div>
+        </div>
+
+        <div class="download-options">
+            <div class="tabs">
+                <div class="tab active"><i class="fa-solid fa-video"></i> Vídeo</div>
+                <div class="tab"><i class="fa-solid fa-music"></i> Áudio</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Qualidade</th>
+                        <th>Formato</th>
+                        <th>Tamanho</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1080p (Full HD)</td>
+                        <td>MP4</td>
+                        <td>128.5 MB</td>
+                        <td><button class="btn-baixar-small"><i class="fa-solid fa-download"></i> Baixar</button></td>
+                    </tr>
+                    <tr>
+                        <td>720p (HD)</td>
+                        <td>MP4</td>
+                        <td>64.7 MB</td>
+                        <td><button class="btn-baixar-small"><i class="fa-solid fa-download"></i> Baixar</button></td>
+                    </tr>
+                    <tr>
+                        <td>480p</td>
+                        <td>MP4</td>
+                        <td>32.1 MB</td>
+                        <td><button class="btn-baixar-small"><i class="fa-solid fa-download"></i> Baixar</button></td>
+                    </tr>
+                    <tr>
+                        <td>360p</td>
+                        <td>MP4</td>
+                        <td>18.9 MB</td>
+                        <td><button class="btn-baixar-small"><i class="fa-solid fa-download"></i> Baixar</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- PLAYLIST SECTION -->
+    <div class="playlist-container" id="playlistContainer">
+        <div class="playlist-header">
+            <h2 id="playlistTitle">Playlist do YouTube</h2>
+            <p class="playlist-count" id="playlistCount">0 vídeos</p>
+        </div>
+        <div class="playlist-videos" id="playlistVideos">
+            <!-- Os vídeos da playlist aparecerão aqui -->
+        </div>
+    </div>
+
+    <!-- STEPS SECTION -->
+    <div class="steps-wrap">
+        <h2 class="section-title">Como baixar em <span>3 passos</span> simples</h2>
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-icon">
+                    <div class="step-number">1</div>
+                    <i class="fa-solid fa-link"></i>
+                </div>
+                <h3>Cole o link</h3>
+                <p>Cole o link do vídeo do YouTube acima.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <div class="step-number">2</div>
+                    <i class="fa-regular fa-clipboard"></i>
+                </div>
+                <h3>Escolha o formato</h3>
+                <p>Selecione a qualidade e o formato que preferir.</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <div class="step-number">3</div>
+                    <i class="fa-solid fa-download"></i>
+                </div>
+                <h3>Baixe o vídeo</h3>
+                <p>Clique em baixar e aproveite seu vídeo!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PLATFORMS SECTION -->
+    <div class="platforms-container">
+        <h3 class="platforms-title">Clique na plataforma que você quer baixar</h3>
+        <div class="platforms-list">
+            <a href="#" class="platform-btn youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+            <a href="https://www.instanflow.com/" class="platform-btn instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
+            <a href="https://saavtik.com/" class="platform-btn tiktok"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+            <a href="#" class="platform-btn kwai"><i class="fa-solid fa-video"></i> Kwai</a>
+        </div>
+    </div>
+
+    <!-- FEATURES SECTION -->
+    <div class="features-container">
+        <div class="feature">
+            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="feature-text">
+                <h4>Seguro</h4>
+                <p>Seus dados protegidos e navegação segura.</p>
+            </div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+            <div class="feature-text">
+                <h4>Rápido</h4>
+                <p>Downloads ultrarrápidos sem complicações.</p>
+            </div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+            <div class="feature-text">
+                <h4>Multi-dispositivos</h4>
+                <p>Funciona em qualquer dispositivo: PC, celular ou tablet.</p>
+            </div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon"><i class="fa-solid fa-infinity"></i></div>
+            <div class="feature-text">
+                <h4>Sem limites</h4>
+                <p>Baixe quantos vídeos quiser, sem limitações.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT SECTION -->
+    <div class="about-container">
+        <h2>Tudo sobre o <span>Tube MPX</span></h2>
+        <p>Ferramenta gratuita para baixar vídeos do YouTube sem marca d'água, direto pelo navegador — sem instalar nada. Cole o link, escolha MP4 ou MP3, e pronto.</p>
+        <div class="about-checklist">
+            <div class="about-item">
+                <div class="about-check"><i class="fa-solid fa-check"></i></div>
+                <div>
+                    <h4>Sem cadastro</h4>
+                    <p>Não pedimos conta nem senha.</p>
+                </div>
+            </div>
+            <div class="about-item">
+                <div class="about-check"><i class="fa-solid fa-check"></i></div>
+                <div>
+                    <h4>MP4 e MP3</h4>
+                    <p>Vídeo completo ou só o áudio.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEVICE COMPAT SECTION -->
+    <div class="device-container">
+        <div class="device-emoji">📱💻</div>
+        <div class="device-text">
+            <h4>Celular ou computador</h4>
+            <p>Funciona igual nos dois: copie o link do vídeo, cole aqui no Tube MPX e baixe. No iPhone, use o Safari para melhor compatibilidade.</p>
+        </div>
+    </div>
+
+    <!-- FAQ SECTION -->
+    <h2 class="section-title">Perguntas <span>frequentes</span></h2>
+    <div class="faq-container">
+        <details class="faq-item">
+            <summary>O Tube MPX é gratuito?</summary>
+            <p>Sim, totalmente gratuito, sem taxas ou planos pagos.</p>
+        </details>
+        <details class="faq-item">
+            <summary>Preciso instalar algo?</summary>
+            <p>Não, tudo acontece direto no navegador.</p>
+        </details>
+        <details class="faq-item">
+            <summary>Dá pra baixar de vídeos privados?</summary>
+            <p>Não, só funciona com vídeos de contas públicas.</p>
+        </details>
+        <details class="faq-item">
+            <summary>Onde os vídeos ficam salvos?</summary>
+            <p>Na pasta de downloads padrão do seu navegador ou dispositivo.</p>
+        </details>
+        <details class="faq-item">
+            <summary>O Tube MPX é seguro?</summary>
+            <p>Sim, não pedimos login nem dados pessoais.</p>
+        </details>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <i class="fa-brands fa-youtube"></i> <span class="logo-text">Tube<span class="logo-accent">MPX</span></span>
+                </a>
+                <p>Baixe vídeos do YouTube em HD, MP4 e MP3, grátis, sem marca d'água e sem complicação.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Ferramentas</h4>
+                <ul>
+                    <li><a href="#">Baixar vídeos do YouTube</a></li>
+                    <li><a href="#">Baixar Shorts do YouTube</a></li>
+                    <li><a href="#">Converter para MP3</a></li>
+                    <li><a href="https://saavtik.com/">Baixar vídeos do TikTok</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Suporte</h4>
+                <ul>
+                    <li><a href="#">Como funciona</a></li>
+                    <li><a href="#">Perguntas frequentes</a></li>
+                    <li><a href="#">Fale conosco</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Termos de uso</a></li>
+                    <li><a href="#">Política de privacidade</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <a href="#" class="logo">
+                    <i class="fa-brands fa-youtube"></i> <span class="logo-text">Tube<span class="logo-accent">MPX</span></span>
+                </a>
+            </div>
+            <p class="footer-disclaimer">O Tube MPX não possui qualquer vínculo com o YouTube ou a empresa Google LLC. Este é um serviço independente de download de vídeos.</p>
+            <span class="footer-copyright">© 2026 Tube MPX. Todos os direitos reservados.</span>
+            <div class="footer-lang">
+                <i class="fa-solid fa-globe"></i> PT
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const btnBaixarPrincipal = document.getElementById('btnBaixarPrincipal');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const playlistContainer = document.getElementById('playlistContainer');
+        const inputUrl = document.querySelector('.search-box input');
+        let currentUrl = '';
+        let videoFormats = [];
+        let audioFormats = [];
+        let currentMode = 'video';
+
+        btnBaixarPrincipal.addEventListener('click', async () => {
+            const url = inputUrl.value.trim();
+            if (!url) {
+                alert('Por favor, cole um link do YouTube!');
+                return;
+            }
+
+            btnBaixarPrincipal.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Carregando...';
+            btnBaixarPrincipal.disabled = true;
+
+            try {
+                const response = await fetch('/get_video_info', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    alert('Erro: ' + data.error);
+                    return;
+                }
+
+                // Verificar se é playlist ou vídeo único
+                if (data.type === 'playlist') {
+                    handlePlaylistResponse(data);
+                } else {
+                    handleVideoResponse(data, url);
+                }
+
+            } catch (error) {
+                alert('Erro ao buscar informações do vídeo: ' + error.message);
+            } finally {
+                btnBaixarPrincipal.innerHTML = '<i class="fa-solid fa-download"></i> Baixar';
+                btnBaixarPrincipal.disabled = false;
+            }
+        });
+
+        document.querySelectorAll('.tab').forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentMode = index === 0 ? 'video' : 'audio';
+                updateFormatsTable(currentMode);
+            });
+        });
+
+        function updateFormatsTable(mode) {
+            const tbody = document.querySelector('tbody');
+            const formats = mode === 'video' ? videoFormats : audioFormats;
+
+            tbody.innerHTML = formats.map(format => `
+                <tr>
+                    <td>${format.quality}</td>
+                    <td>${format.format}</td>
+                    <td>${format.size}</td>
+                    <td><button class="btn-baixar-small" data-format="${format.format_id}" data-type="${mode}">
+                        <i class="fa-solid fa-download"></i> Baixar
+                    </button></td>
+                </tr>
+            `).join('');
+
+            document.querySelectorAll('.btn-baixar-small').forEach((btn) => {
+                btn.addEventListener('click', handleDownload);
+            });
+        }
+
+        async function handleDownload(e) {
+            const btn = e.currentTarget;
+            const formatId = btn.dataset.format;
+            const type = btn.dataset.type;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Baixando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        url: currentUrl,
+                        format_id: formatId,
+                        type: type
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao baixar o vídeo');
+                }
+
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = '';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(a);
+
+                btn.classList.add('clicked');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Baixado!';
+
+            } catch (error) {
+                alert('Erro ao baixar: ' + error.message);
+                btn.innerHTML = '<i class="fa-solid fa-download"></i> Baixar';
+                btn.disabled = false;
+            }
+        }
+
+        document.querySelectorAll('.btn-colar, .btn-colar-mobile').forEach((btn) => {
+            btn.addEventListener('click', async () => {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (inputUrl && text) inputUrl.value = text;
+                } catch (err) {
+                    console.log('Não foi possível acessar a área de transferência.');
+                }
+            });
+        });
+
+        function handleVideoResponse(data, url) {
+            currentUrl = url;
+            videoFormats = data.formats;
+            audioFormats = data.audio_formats;
+
+            document.querySelector('.video-title').textContent = data.title;
+            document.querySelector('.thumbnail').style.backgroundImage = `url(${data.thumbnail})`;
+            document.querySelector('.thumbnail').style.backgroundSize = 'cover';
+
+            const duration = formatDuration(data.duration);
+            const views = formatViews(data.views);
+            document.querySelector('.video-meta').innerHTML = `
+                <span><i class="fa-regular fa-clock"></i> ${duration}</span>
+                <span><i class="fa-regular fa-eye"></i> ${views} visualizações</span>
+            `;
+
+            updateFormatsTable('video');
+
+            resultsContainer.classList.add('visible');
+            playlistContainer.classList.remove('visible');
+            const y = resultsContainer.getBoundingClientRect().top + window.pageYOffset - 20;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+
+        function handlePlaylistResponse(data) {
+            document.getElementById('playlistTitle').textContent = data.playlist_title;
+            document.getElementById('playlistCount').textContent = `${data.playlist_count} vídeos`;
+
+            const playlistVideos = document.getElementById('playlistVideos');
+            playlistVideos.innerHTML = data.videos.map(video => `
+                <div class="playlist-video-item" data-url="${video.url}">
+                    <div class="playlist-video-thumb" style="background-image: url(${video.thumbnail})">
+                        <span class="playlist-video-index">#${video.index}</span>
+                    </div>
+                    <div class="playlist-video-info">
+                        <h3 class="playlist-video-title">${video.title}</h3>
+                        <p class="playlist-video-duration">${formatDuration(video.duration)}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Adicionar event listeners aos itens da playlist
+            document.querySelectorAll('.playlist-video-item').forEach(item => {
+                item.addEventListener('click', async () => {
+                    const videoUrl = item.dataset.url;
+                    inputUrl.value = videoUrl;
+                    btnBaixarPrincipal.click();
+                });
+            });
+
+            resultsContainer.classList.remove('visible');
+            playlistContainer.classList.add('visible');
+            const y = playlistContainer.getBoundingClientRect().top + window.pageYOffset - 20;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function formatViews(views) {
+            if (views >= 1000000) {
+                return (views / 1000000).toFixed(1) + 'M';
+            } else if (views >= 1000) {
+                return (views / 1000).toFixed(1) + 'K';
+            }
+            return views.toString();
+        }
+
+        // Sistema de idiomas
+        const translations = {
+            pt: {
+                nav1: 'Baixar vídeos do YouTube grátis',
+                nav2: 'Baixar Shorts do YouTube',
+                nav3: 'Converter para MP3',
+                heroTitle: 'Baixe vídeos do <span>YouTube</span> grátis',
+                heroDesc: 'Cole o link do vídeo do YouTube abaixo e baixe em diferentes formatos e qualidades.',
+                placeholder: 'Cole o link do vídeo do YouTube aqui...',
+                btnPaste: 'Colar',
+                btnDownload: 'Baixar',
+                videoFound: 'Vídeo encontrado',
+                tabVideo: 'Vídeo',
+                tabAudio: 'Áudio',
+                thQuality: 'Qualidade',
+                thFormat: 'Formato',
+                thSize: 'Tamanho',
+                thAction: 'Ação',
+                stepsTitle: 'Como baixar em <span>3 passos</span> simples',
+                step1Title: 'Cole o link',
+                step1Desc: 'Cole o link do vídeo do YouTube acima.',
+                step2Title: 'Escolha o formato',
+                step2Desc: 'Selecione a qualidade e o formato que preferir.',
+                step3Title: 'Baixe o vídeo',
+                step3Desc: 'Clique em baixar e aproveite seu vídeo!',
+                platformsTitle: 'Clique na plataforma que você quer baixar',
+                feature1Title: 'Seguro',
+                feature1Desc: 'Seus dados protegidos e navegação segura.',
+                feature2Title: 'Rápido',
+                feature2Desc: 'Downloads ultrarrápidos sem complicações.',
+                feature3Title: 'Multi-dispositivos',
+                feature3Desc: 'Funciona em qualquer dispositivo: PC, celular ou tablet.',
+                feature4Title: 'Sem limites',
+                feature4Desc: 'Baixe quantos vídeos quiser, sem limitações.',
+                aboutTitle: 'Tudo sobre o <span>Tube MPX</span>',
+                aboutDesc: 'Ferramenta gratuita para baixar vídeos do YouTube sem marca d\'água, direto pelo navegador — sem instalar nada. Cole o link, escolha MP4 ou MP3, e pronto.',
+                about1Title: 'Sem cadastro',
+                about1Desc: 'Não pedimos conta nem senha.',
+                about2Title: 'MP4 e MP3',
+                about2Desc: 'Vídeo completo ou só o áudio.',
+                deviceTitle: 'Celular ou computador',
+                deviceDesc: 'Funciona igual nos dois: copie o link do vídeo, cole aqui no Tube MPX e baixe. No iPhone, use o Safari para melhor compatibilidade.',
+                faqTitle: 'Perguntas <span>frequentes</span>',
+                faq1Q: 'O Tube MPX é gratuito?',
+                faq1A: 'Sim, totalmente gratuito, sem taxas ou planos pagos.',
+                faq2Q: 'Preciso instalar algo?',
+                faq2A: 'Não, tudo acontece direto no navegador.',
+                faq3Q: 'Dá pra baixar de vídeos privados?',
+                faq3A: 'Não, só funciona com vídeos de contas públicas.',
+                faq4Q: 'Onde os vídeos ficam salvos?',
+                faq4A: 'Na pasta de downloads padrão do seu navegador ou dispositivo.',
+                faq5Q: 'O Tube MPX é seguro?',
+                faq5A: 'Sim, não pedimos login nem dados pessoais.',
+                footerDesc: 'Baixe vídeos do YouTube em HD, MP4 e MP3, grátis, sem marca d\'água e sem complicação.',
+                footerTools: 'Ferramentas',
+                footerSupport: 'Suporte',
+                footerLegal: 'Legal',
+                footerLink1: 'Baixar vídeos do YouTube',
+                footerLink2: 'Baixar Shorts do YouTube',
+                footerLink3: 'Converter para MP3',
+                footerLink4: 'Baixar vídeos do TikTok',
+                footerLink5: 'Como funciona',
+                footerLink6: 'Perguntas frequentes',
+                footerLink7: 'Fale conosco',
+                footerLink8: 'Termos de uso',
+                footerLink9: 'Política de privacidade',
+                footerDisclaimer: 'O Tube MPX não possui qualquer vínculo com o YouTube ou a empresa Google LLC. Este é um serviço independente de download de vídeos.',
+                footerCopyright: '© 2026 Tube MPX. Todos os direitos reservados.',
+                loading: 'Carregando...',
+                downloading: 'Baixando...',
+                downloaded: 'Baixado!',
+                errorUrl: 'Por favor, cole um link do YouTube!',
+                errorDownload: 'Erro ao baixar: ',
+                views: 'visualizações',
+                videos: 'vídeos'
+            },
+            en: {
+                nav1: 'Download YouTube videos free',
+                nav2: 'Download YouTube Shorts',
+                nav3: 'Convert to MP3',
+                heroTitle: 'Download <span>YouTube</span> videos free',
+                heroDesc: 'Paste the YouTube video link below and download in different formats and qualities.',
+                placeholder: 'Paste the YouTube video link here...',
+                btnPaste: 'Paste',
+                btnDownload: 'Download',
+                videoFound: 'Video found',
+                tabVideo: 'Video',
+                tabAudio: 'Audio',
+                thQuality: 'Quality',
+                thFormat: 'Format',
+                thSize: 'Size',
+                thAction: 'Action',
+                stepsTitle: 'How to download in <span>3 simple</span> steps',
+                step1Title: 'Paste the link',
+                step1Desc: 'Paste the YouTube video link above.',
+                step2Title: 'Choose the format',
+                step2Desc: 'Select the quality and format you prefer.',
+                step3Title: 'Download the video',
+                step3Desc: 'Click download and enjoy your video!',
+                platformsTitle: 'Click the platform you want to download from',
+                feature1Title: 'Secure',
+                feature1Desc: 'Your data protected and secure browsing.',
+                feature2Title: 'Fast',
+                feature2Desc: 'Ultra-fast downloads without complications.',
+                feature3Title: 'Multi-device',
+                feature3Desc: 'Works on any device: PC, phone or tablet.',
+                feature4Title: 'No limits',
+                feature4Desc: 'Download as many videos as you want, no limitations.',
+                aboutTitle: 'All about <span>Tube MPX</span>',
+                aboutDesc: 'Free tool to download YouTube videos without watermark, directly in the browser — nothing to install. Paste the link, choose MP4 or MP3, and done.',
+                about1Title: 'No registration',
+                about1Desc: 'We don\'t ask for account or password.',
+                about2Title: 'MP4 and MP3',
+                about2Desc: 'Full video or audio only.',
+                deviceTitle: 'Phone or computer',
+                deviceDesc: 'Works the same on both: copy the video link, paste here on Tube MPX and download. On iPhone, use Safari for better compatibility.',
+                faqTitle: 'Frequently asked <span>questions</span>',
+                faq1Q: 'Is Tube MPX free?',
+                faq1A: 'Yes, completely free, no fees or paid plans.',
+                faq2Q: 'Do I need to install anything?',
+                faq2A: 'No, everything happens directly in the browser.',
+                faq3Q: 'Can I download private videos?',
+                faq3A: 'No, it only works with public account videos.',
+                faq4Q: 'Where are the videos saved?',
+                faq4A: 'In your browser\'s or device\'s default downloads folder.',
+                faq5Q: 'Is Tube MPX safe?',
+                faq5A: 'Yes, we don\'t ask for login or personal data.',
+                footerDesc: 'Download YouTube videos in HD, MP4 and MP3, free, without watermark and without hassle.',
+                footerTools: 'Tools',
+                footerSupport: 'Support',
+                footerLegal: 'Legal',
+                footerLink1: 'Download YouTube videos',
+                footerLink2: 'Download YouTube Shorts',
+                footerLink3: 'Convert to MP3',
+                footerLink4: 'Download TikTok videos',
+                footerLink5: 'How it works',
+                footerLink6: 'Frequently asked questions',
+                footerLink7: 'Contact us',
+                footerLink8: 'Terms of use',
+                footerLink9: 'Privacy policy',
+                footerDisclaimer: 'Tube MPX has no affiliation with YouTube or Google LLC. This is an independent video download service.',
+                footerCopyright: '© 2026 Tube MPX. All rights reserved.',
+                loading: 'Loading...',
+                downloading: 'Downloading...',
+                downloaded: 'Downloaded!',
+                errorUrl: 'Please paste a YouTube link!',
+                errorDownload: 'Download error: ',
+                views: 'views',
+                videos: 'videos'
+            },
+            es: {
+                nav1: 'Descargar vídeos de YouTube gratis',
+                nav2: 'Descargar Shorts de YouTube',
+                nav3: 'Convertir a MP3',
+                heroTitle: 'Descarga vídeos de <span>YouTube</span> gratis',
+                heroDesc: 'Pega el enlace del vídeo de YouTube abajo y descarga en diferentes formatos y calidades.',
+                placeholder: 'Pega el enlace del vídeo de YouTube aquí...',
+                btnPaste: 'Pegar',
+                btnDownload: 'Descargar',
+                videoFound: 'Vídeo encontrado',
+                tabVideo: 'Vídeo',
+                tabAudio: 'Audio',
+                thQuality: 'Calidad',
+                thFormat: 'Formato',
+                thSize: 'Tamaño',
+                thAction: 'Acción',
+                stepsTitle: 'Cómo descargar en <span>3 pasos</span> simples',
+                step1Title: 'Pega el enlace',
+                step1Desc: 'Pega el enlace del vídeo de YouTube arriba.',
+                step2Title: 'Elige el formato',
+                step2Desc: 'Selecciona la calidad y el formato que prefieras.',
+                step3Title: 'Descarga el vídeo',
+                step3Desc: '¡Haz clic en descargar y disfruta tu vídeo!',
+                platformsTitle: 'Haz clic en la plataforma que quieres descargar',
+                feature1Title: 'Seguro',
+                feature1Desc: 'Tus datos protegidos y navegación segura.',
+                feature2Title: 'Rápido',
+                feature2Desc: 'Descargas ultrarrápidas sin complicaciones.',
+                feature3Title: 'Multi-dispositivos',
+                feature3Desc: 'Funciona en cualquier dispositivo: PC, móvil o tablet.',
+                feature4Title: 'Sin límites',
+                feature4Desc: 'Descarga cuantos vídeos quieras, sin limitaciones.',
+                aboutTitle: 'Todo sobre <span>Tube MPX</span>',
+                aboutDesc: 'Herramienta gratuita para descargar vídeos de YouTube sin marca de agua, directamente en el navegador — sin instalar nada. Pega el enlace, elige MP4 o MP3, y listo.',
+                about1Title: 'Sin registro',
+                about1Desc: 'No pedimos cuenta ni contraseña.',
+                about2Title: 'MP4 y MP3',
+                about2Desc: 'Vídeo completo o solo el audio.',
+                deviceTitle: 'Móvil o ordenador',
+                deviceDesc: 'Funciona igual en ambos: copia el enlace del vídeo, pégalo aquí en Tube MPX y descarga. En iPhone, usa Safari para mejor compatibilidad.',
+                faqTitle: 'Preguntas <span>frecuentes</span>',
+                faq1Q: '¿Tube MPX es gratuito?',
+                faq1A: 'Sí, totalmente gratuito, sin tarifas ni planes pagos.',
+                faq2Q: '¿Necesito instalar algo?',
+                faq2A: 'No, todo ocurre directamente en el navegador.',
+                faq3Q: '¿Puedo descargar vídeos privados?',
+                faq3A: 'No, solo funciona con vídeos de cuentas públicas.',
+                faq4Q: '¿Dónde se guardan los vídeos?',
+                faq4A: 'En la carpeta de descargas predeterminada de tu navegador o dispositivo.',
+                faq5Q: '¿Tube MPX es seguro?',
+                faq5A: 'Sí, no pedimos login ni datos personales.',
+                footerDesc: 'Descarga vídeos de YouTube en HD, MP4 y MP3, gratis, sin marca de agua y sin complicaciones.',
+                footerTools: 'Herramientas',
+                footerSupport: 'Soporte',
+                footerLegal: 'Legal',
+                footerLink1: 'Descargar vídeos de YouTube',
+                footerLink2: 'Descargar Shorts de YouTube',
+                footerLink3: 'Convertir a MP3',
+                footerLink4: 'Descargar vídeos de TikTok',
+                footerLink5: 'Cómo funciona',
+                footerLink6: 'Preguntas frecuentes',
+                footerLink7: 'Contáctanos',
+                footerLink8: 'Términos de uso',
+                footerLink9: 'Política de privacidad',
+                footerDisclaimer: 'Tube MPX no tiene ninguna afiliación con YouTube o Google LLC. Este es un servicio independiente de descarga de vídeos.',
+                footerCopyright: '© 2026 Tube MPX. Todos los derechos reservados.',
+                loading: 'Cargando...',
+                downloading: 'Descargando...',
+                downloaded: '¡Descargado!',
+                errorUrl: '¡Por favor, pega un enlace de YouTube!',
+                errorDownload: 'Error al descargar: ',
+                views: 'visualizaciones',
+                videos: 'vídeos'
+            },
+            fr: {
+                nav1: 'Télécharger des vidéos YouTube gratuitement',
+                nav2: 'Télécharger les Shorts YouTube',
+                nav3: 'Convertir en MP3',
+                heroTitle: 'Téléchargez des vidéos <span>YouTube</span> gratuitement',
+                heroDesc: 'Collez le lien de la vidéo YouTube ci-dessous et téléchargez dans différents formats et qualités.',
+                placeholder: 'Collez le lien de la vidéo YouTube ici...',
+                btnPaste: 'Coller',
+                btnDownload: 'Télécharger',
+                videoFound: 'Vidéo trouvée',
+                tabVideo: 'Vidéo',
+                tabAudio: 'Audio',
+                thQuality: 'Qualité',
+                thFormat: 'Format',
+                thSize: 'Taille',
+                thAction: 'Action',
+                stepsTitle: 'Comment télécharger en <span>3 étapes</span> simples',
+                step1Title: 'Collez le lien',
+                step1Desc: 'Collez le lien de la vidéo YouTube ci-dessus.',
+                step2Title: 'Choisissez le format',
+                step2Desc: 'Sélectionnez la qualité et le format que vous préférez.',
+                step3Title: 'Téléchargez la vidéo',
+                step3Desc: 'Cliquez sur télécharger et profitez de votre vidéo !',
+                platformsTitle: 'Cliquez sur la plateforme depuis laquelle vous voulez télécharger',
+                feature1Title: 'Sécurisé',
+                feature1Desc: 'Vos données protégées et navigation sécurisée.',
+                feature2Title: 'Rapide',
+                feature2Desc: 'Téléchargements ultrarapides sans complications.',
+                feature3Title: 'Multi-appareils',
+                feature3Desc: 'Fonctionne sur tout appareil : PC, téléphone ou tablette.',
+                feature4Title: 'Sans limites',
+                feature4Desc: 'Téléchargez autant de vidéos que vous voulez, sans limitations.',
+                aboutTitle: 'Tout sur <span>Tube MPX</span>',
+                aboutDesc: 'Outil gratuit pour télécharger des vidéos YouTube sans filigrane, directement dans le navigateur — rien à installer. Collez le lien, choisissez MP4 ou MP3, et c\'est fait.',
+                about1Title: 'Sans inscription',
+                about1Desc: 'Nous ne demandons ni compte ni mot de passe.',
+                about2Title: 'MP4 et MP3',
+                about2Desc: 'Vidéo complète ou audio uniquement.',
+                deviceTitle: 'Téléphone ou ordinateur',
+                deviceDesc: 'Fonctionne de la même manière sur les deux : copiez le lien de la vidéo, collez-le ici sur Tube MPX et téléchargez. Sur iPhone, utilisez Safari pour une meilleure compatibilité.',
+                faqTitle: 'Questions <span>fréquentes</span>',
+                faq1Q: 'Tube MPX est-il gratuit ?',
+                faq1A: 'Oui, entièrement gratuit, sans frais ni plans payants.',
+                faq2Q: 'Dois-je installer quelque chose ?',
+                faq2A: 'Non, tout se passe directement dans le navigateur.',
+                faq3Q: 'Puis-je télécharger des vidéos privées ?',
+                faq3A: 'Non, cela fonctionne uniquement avec les vidéos de comptes publics.',
+                faq4Q: 'Où sont enregistrées les vidéos ?',
+                faq4A: 'Dans le dossier de téléchargements par défaut de votre navigateur ou appareil.',
+                faq5Q: 'Tube MPX est-il sécurisé ?',
+                faq5A: 'Oui, nous ne demandons ni connexion ni données personnelles.',
+                footerDesc: 'Téléchargez des vidéos YouTube en HD, MP4 et MP3, gratuitement, sans filigrane et sans tracas.',
+                footerTools: 'Outils',
+                footerSupport: 'Support',
+                footerLegal: 'Légal',
+                footerLink1: 'Télécharger des vidéos YouTube',
+                footerLink2: 'Télécharger les Shorts YouTube',
+                footerLink3: 'Convertir en MP3',
+                footerLink4: 'Télécharger des vidéos TikTok',
+                footerLink5: 'Comment ça marche',
+                footerLink6: 'Questions fréquentes',
+                footerLink7: 'Contactez-nous',
+                footerLink8: 'Conditions d\'utilisation',
+                footerLink9: 'Politique de confidentialité',
+                footerDisclaimer: 'Tube MPX n\'a aucune affiliation avec YouTube ou Google LLC. Il s\'agit d\'un service indépendant de téléchargement de vidéos.',
+                footerCopyright: '© 2026 Tube MPX. Tous droits réservés.',
+                loading: 'Chargement...',
+                downloading: 'Téléchargement...',
+                downloaded: 'Téléchargé !',
+                errorUrl: 'Veuillez coller un lien YouTube !',
+                errorDownload: 'Erreur de téléchargement : ',
+                views: 'vues',
+                videos: 'vidéos'
+            },
+            de: {
+                nav1: 'YouTube-Videos kostenlos herunterladen',
+                nav2: 'YouTube Shorts herunterladen',
+                nav3: 'In MP3 konvertieren',
+                heroTitle: '<span>YouTube</span>-Videos kostenlos herunterladen',
+                heroDesc: 'Fügen Sie den YouTube-Video-Link unten ein und laden Sie in verschiedenen Formaten und Qualitäten herunter.',
+                placeholder: 'YouTube-Video-Link hier einfügen...',
+                btnPaste: 'Einfügen',
+                btnDownload: 'Herunterladen',
+                videoFound: 'Video gefunden',
+                tabVideo: 'Video',
+                tabAudio: 'Audio',
+                thQuality: 'Qualität',
+                thFormat: 'Format',
+                thSize: 'Größe',
+                thAction: 'Aktion',
+                stepsTitle: 'So laden Sie in <span>3 einfachen</span> Schritten herunter',
+                step1Title: 'Link einfügen',
+                step1Desc: 'Fügen Sie den YouTube-Video-Link oben ein.',
+                step2Title: 'Format wählen',
+                step2Desc: 'Wählen Sie die Qualität und das Format Ihrer Wahl.',
+                step3Title: 'Video herunterladen',
+                step3Desc: 'Klicken Sie auf Herunterladen und genießen Sie Ihr Video!',
+                platformsTitle: 'Klicken Sie auf die Plattform, von der Sie herunterladen möchten',
+                feature1Title: 'Sicher',
+                feature1Desc: 'Ihre Daten geschützt und sicheres Surfen.',
+                feature2Title: 'Schnell',
+                feature2Desc: 'Ultraschnelle Downloads ohne Komplikationen.',
+                feature3Title: 'Multi-Geräte',
+                feature3Desc: 'Funktioniert auf jedem Gerät: PC, Handy oder Tablet.',
+                feature4Title: 'Keine Grenzen',
+                feature4Desc: 'Laden Sie so viele Videos herunter, wie Sie möchten, ohne Einschränkungen.',
+                aboutTitle: 'Alles über <span>Tube MPX</span>',
+                aboutDesc: 'Kostenloses Tool zum Herunterladen von YouTube-Videos ohne Wasserzeichen, direkt im Browser — nichts zu installieren. Link einfügen, MP4 oder MP3 wählen, fertig.',
+                about1Title: 'Keine Registrierung',
+                about1Desc: 'Wir fragen nicht nach Konto oder Passwort.',
+                about2Title: 'MP4 und MP3',
+                about2Desc: 'Vollständiges Video oder nur Audio.',
+                deviceTitle: 'Handy oder Computer',
+                deviceDesc: 'Funktioniert auf beiden gleich: Video-Link kopieren, hier bei Tube MPX einfügen und herunterladen. Auf iPhone verwenden Sie Safari für bessere Kompatibilität.',
+                faqTitle: 'Häufig gestellte <span>Fragen</span>',
+                faq1Q: 'Ist Tube MPX kostenlos?',
+                faq1A: 'Ja,完全無料、料金や有料プランはありません。',
+                faq2Q: 'Muss ich etwas installieren?',
+                faq2A: 'Nein, alles passiert direkt im Browser.',
+                faq3Q: 'Kann ich private Videos herunterladen?',
+                faq3A: 'Nein, es funktioniert nur mit Videos öffentlicher Konten.',
+                faq4Q: 'Wo werden die Videos gespeichert?',
+                faq4A: 'Im Standard-Download-Ordner Ihres Browsers oder Geräts.',
+                faq5Q: 'Ist Tube MPX sicher?',
+                faq5A: 'Ja, wir fragen nicht nach Login oder persönlichen Daten.',
+                footerDesc: 'YouTube-Videos in HD, MP4 und MP3 herunterladen, kostenlos, ohne Wasserzeichen und ohne Aufwand.',
+                footerTools: 'Werkzeuge',
+                footerSupport: 'Support',
+                footerLegal: 'Rechtliches',
+                footerLink1: 'YouTube-Videos herunterladen',
+                footerLink2: 'YouTube Shorts herunterladen',
+                footerLink3: 'In MP3 konvertieren',
+                footerLink4: 'TikTok-Videos herunterladen',
+                footerLink5: 'So funktioniert es',
+                footerLink6: 'Häufig gestellte Fragen',
+                footerLink7: 'Kontaktieren Sie uns',
+                footerLink8: 'Nutzungsbedingungen',
+                footerLink9: 'Datenschutzrichtlinie',
+                footerDisclaimer: 'Tube MPX steht in keiner Verbindung zu YouTube oder Google LLC. Dies ist ein unabhängiger Video-Download-Dienst.',
+                footerCopyright: '© 2026 Tube MPX. Alle Rechte vorbehalten.',
+                loading: 'Laden...',
+                downloading: 'Herunterladen...',
+                downloaded: 'Heruntergeladen!',
+                errorUrl: 'Bitte fügen Sie einen YouTube-Link ein!',
+                errorDownload: 'Download-Fehler: ',
+                views: 'Aufrufe',
+                videos: 'Videos'
+            },
+            it: {
+                nav1: 'Scarica video YouTube gratis',
+                nav2: 'Scarica Shorts di YouTube',
+                nav3: 'Converti in MP3',
+                heroTitle: 'Scarica video <span>YouTube</span> gratis',
+                heroDesc: 'Incolla il link del video YouTube qui sotto e scarica in diversi formati e qualità.',
+                placeholder: 'Incolla il link del video YouTube qui...',
+                btnPaste: 'Incolla',
+                btnDownload: 'Scarica',
+                videoFound: 'Video trovato',
+                tabVideo: 'Video',
+                tabAudio: 'Audio',
+                thQuality: 'Qualità',
+                thFormat: 'Formato',
+                thSize: 'Dimensione',
+                thAction: 'Azione',
+                stepsTitle: 'Come scaricare in <span>3 semplici</span> passi',
+                step1Title: 'Incolla il link',
+                step1Desc: 'Incolla il link del video YouTube sopra.',
+                step2Title: 'Scegli il formato',
+                step2Desc: 'Seleziona la qualità e il formato che preferisci.',
+                step3Title: 'Scarica il video',
+                step3Desc: 'Clicca su scarica e goditi il tuo video!',
+                platformsTitle: 'Clicca sulla piattaforma da cui vuoi scaricare',
+                feature1Title: 'Sicuro',
+                feature1Desc: 'I tuoi dati protetti e navigazione sicura.',
+                feature2Title: 'Veloce',
+                feature2Desc: 'Download ultraveloci senza complicazioni.',
+                feature3Title: 'Multi-dispositivo',
+                feature3Desc: 'Funziona su qualsiasi dispositivo: PC, telefono o tablet.',
+                feature4Title: 'Senza limiti',
+                feature4Desc: 'Scarica quanti video vuoi, senza limitazioni.',
+                aboutTitle: 'Tutto su <span>Tube MPX</span>',
+                aboutDesc: 'Strumento gratuito per scaricare video YouTube senza filigrana, direttamente nel browser — niente da installare. Incolla il link, scegli MP4 o MP3, e fatto.',
+                about1Title: 'Senza registrazione',
+                about1Desc: 'Non chiediamo account né password.',
+                about2Title: 'MP4 e MP3',
+                about2Desc: 'Video completo o solo audio.',
+                deviceTitle: 'Telefono o computer',
+                deviceDesc: 'Funziona allo stesso modo su entrambi: copia il link del video, incollalo qui su Tube MPX e scarica. Su iPhone, usa Safari per una migliore compatibilità.',
+                faqTitle: 'Domande <span>frequenti</span>',
+                faq1Q: 'Tube MPX è gratuito?',
+                faq1A: 'Sì, completamente gratuito, senza costi o piani a pagamento.',
+                faq2Q: 'Devo installare qualcosa?',
+                faq2A: 'No, tutto avviene direttamente nel browser.',
+                faq3Q: 'Posso scaricare video privati?',
+                faq3A: 'No, funziona solo con video di account pubblici.',
+                faq4Q: 'Dove vengono salvati i video?',
+                faq4A: 'Nella cartella download predefinita del tuo browser o dispositivo.',
+                faq5Q: 'Tube MPX è sicuro?',
+                faq5A: 'Sì, non chiediamo login né dati personali.',
+                footerDesc: 'Scarica video YouTube in HD, MP4 e MP3, gratis, senza filigrana e senza problemi.',
+                footerTools: 'Strumenti',
+                footerSupport: 'Supporto',
+                footerLegal: 'Legale',
+                footerLink1: 'Scarica video YouTube',
+                footerLink2: 'Scarica Shorts di YouTube',
+                footerLink3: 'Converti in MP3',
+                footerLink4: 'Scarica video TikTok',
+                footerLink5: 'Come funziona',
+                footerLink6: 'Domande frequenti',
+                footerLink7: 'Contattaci',
+                footerLink8: 'Termini di utilizzo',
+                footerLink9: 'Politica sulla privacy',
+                footerDisclaimer: 'Tube MPX non ha alcuna affiliazione con YouTube o Google LLC. Questo è un servizio indipendente di download di video.',
+                footerCopyright: '© 2026 Tube MPX. Tutti i diritti riservati.',
+                loading: 'Caricamento...',
+                downloading: 'Scaricamento...',
+                downloaded: 'Scaricato!',
+                errorUrl: 'Per favore, incolla un link YouTube!',
+                errorDownload: 'Errore di download: ',
+                views: 'visualizzazioni',
+                videos: 'video'
+            },
+            hi: {
+                nav1: 'YouTube वीडियो मुफ्त डाउनलोड करें',
+                nav2: 'YouTube Shorts डाउनलोड करें',
+                nav3: 'MP3 में कनवर्ट करें',
+                heroTitle: '<span>YouTube</span> वीडियो मुफ्त डाउनलोड करें',
+                heroDesc: 'नीचे YouTube वीडियो लिंक पेस्ट करें और विभिन्न प्रारूपों और गुणवत्ता में डाउनलोड करें।',
+                placeholder: 'YouTube वीडियो लिंक यहाँ पेस्ट करें...',
+                btnPaste: 'पेस्ट',
+                btnDownload: 'डाउनलोड',
+                videoFound: 'वीडियो मिला',
+                tabVideo: 'वीडियो',
+                tabAudio: 'ऑडियो',
+                thQuality: 'गुणवत्ता',
+                thFormat: 'प्रारूप',
+                thSize: 'आकार',
+                thAction: 'कार्रवाई',
+                stepsTitle: '<span>3 सरल चरणों</span> में कैसे डाउनलोड करें',
+                step1Title: 'लिंक पेस्ट करें',
+                step1Desc: 'ऊपर YouTube वीडियो लिंक पेस्ट करें।',
+                step2Title: 'प्रारूप चुनें',
+                step2Desc: 'अपनी पसंद की गुणवत्ता और प्रारूप चुनें।',
+                step3Title: 'वीडियो डाउनलोड करें',
+                step3Desc: 'डाउनलोड पर क्लिक करें और अपने वीडियो का आनंद लें!',
+                platformsTitle: 'उस प्लेटफ़ॉर्म पर क्लिक करें जिससे आप डाउनलोड करना चाहते हैं',
+                feature1Title: 'सुरक्षित',
+                feature1Desc: 'आपका डेटा सुरक्षित और सुरक्षित ब्राउज़िंग।',
+                feature2Title: 'तेज़',
+                feature2Desc: 'बिना किसी जटिलता के अति-तेज़ डाउनलोड।',
+                feature3Title: 'मल्टी-डिवाइस',
+                feature3Desc: 'किसी भी डिवाइस पर काम करता है: PC, फ़ोन या टैबलेट।',
+                feature4Title: 'कोई सीमा नहीं',
+                feature4Desc: 'जितने चाहें उतने वीडियो डाउनलोड करें, बिना किसी सीमा के।',
+                aboutTitle: '<span>Tube MPX</span> के बारे में सब कुछ',
+                aboutDesc: 'YouTube वीडियो को बिना वॉटरमार्क के डाउनलोड करने के लिए मुफ्त टूल, सीधे ब्राउज़र में — कुछ भी इंस्टॉल करने की ज़रूरत नहीं। लिंक पेस्ट करें, MP4 या MP3 चुनें, और हो गया।',
+                about1Title: 'कोई पंजीकरण नहीं',
+                about1Desc: 'हम खाता या पासवर्ड नहीं मांगते।',
+                about2Title: 'MP4 और MP3',
+                about2Desc: 'पूरा वीडियो या केवल ऑडियो।',
+                deviceTitle: 'फ़ोन या कंप्यूटर',
+                deviceDesc: 'दोनों पर समान काम करता है: वीडियो लिंक कॉपी करें, यहाँ Tube MPX पर पेस्ट करें और डाउनलोड करें। iPhone पर, बेहतर संगतता के लिए Safari का उपयोग करें।',
+                faqTitle: 'अक्सर पूछे जाने वाले <span>सवाल</span>',
+                faq1Q: 'क्या Tube MPX मुफ्त है?',
+                faq1A: 'हाँ, पूरी तरह से मुफ्त, कोई शुल्क या सशुल्क योजनाएँ नहीं।',
+                faq2Q: 'क्या मुझे कुछ इंस्टॉल करना होगा?',
+                faq2A: 'नहीं, सब कुछ सीधे ब्राउज़र में होता है।',
+                faq3Q: 'क्या मैं निजी वीडियो डाउनलोड कर सकता हूँ?',
+                faq3A: 'नहीं, यह केवल सार्वजनिक खातों के वीडियो के साथ काम करता है।',
+                faq4Q: 'वीडियो कहाँ सेव होते हैं?',
+                faq4A: 'आपके ब्राउज़र या डिवाइस के डिफ़ॉल्ट डाउनलोड फ़ोल्डर में।',
+                faq5Q: 'क्या Tube MPX सुरक्षित है?',
+                faq5A: 'हाँ, हम लॉगिन या व्यक्तिगत डेटा नहीं मांगते।',
+                footerDesc: 'YouTube वीडियो HD, MP4 और MP3 में डाउनलोड करें, मुफ्त, बिना वॉटरमार्क और बिना परेशानी के।',
+                footerTools: 'उपकरण',
+                footerSupport: 'सहायता',
+                footerLegal: 'कानूनी',
+                footerLink1: 'YouTube वीडियो डाउनलोड करें',
+                footerLink2: 'YouTube Shorts डाउनलोड करें',
+                footerLink3: 'MP3 में कनवर्ट करें',
+                footerLink4: 'TikTok वीडियो डाउनलोड करें',
+                footerLink5: 'यह कैसे काम करता है',
+                footerLink6: 'अक्सर पूछे जाने वाले सवाल',
+                footerLink7: 'हमसे संपर्क करें',
+                footerLink8: 'उपयोग की शर्तें',
+                footerLink9: 'गोपनीयता नीति',
+                footerDisclaimer: 'Tube MPX का YouTube या Google LLC से कोई संबंध नहीं है। यह एक स्वतंत्र वीडियो डाउनलोड सेवा है।',
+                footerCopyright: '© 2026 Tube MPX. सर्वाधिकार सुरक्षित।',
+                loading: 'लोड हो रहा है...',
+                downloading: 'डाउनलोड हो रहा है...',
+                downloaded: 'डाउनलोड हो गया!',
+                errorUrl: 'कृपया YouTube लिंक पेस्ट करें!',
+                errorDownload: 'डाउनलोड त्रुटि: ',
+                views: 'व्यूज',
+                videos: 'वीडियो'
+            }
+        };
+
+        let currentLang = 'pt';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            if (!t) return;
+
+            // Atualizar textos do nav
+            const navLinks = document.querySelectorAll('nav a');
+            if (navLinks.length >= 3) {
+                navLinks[0].textContent = t.nav1;
+                navLinks[1].textContent = t.nav2;
+                navLinks[2].textContent = t.nav3;
+            }
+
+            // Atualizar hero
+            document.querySelector('.hero-content h1').innerHTML = t.heroTitle;
+            document.querySelector('.hero-lead-text').innerHTML = t.heroDesc.replace(' e baixe em diferentes formatos e qualidades.', '<span class="hero-p-desktop-only"> e baixe em diferentes formatos e qualidades</span>.');
+            document.querySelector('.search-box input').placeholder = t.placeholder;
+            document.querySelector('.btn-colar').innerHTML = '<i class="fa-regular fa-clipboard"></i> ' + t.btnPaste;
+            document.querySelector('.btn-colar-mobile').innerHTML = '<i class="fa-regular fa-clipboard"></i> ' + t.btnPaste;
+            document.getElementById('btnBaixarPrincipal').innerHTML = '<i class="fa-solid fa-download"></i> ' + t.btnDownload;
+
+            // Atualizar resultados
+            document.querySelector('.status-badge').innerHTML = '<i class="fa-regular fa-circle-check"></i> ' + t.videoFound;
+            document.querySelectorAll('.tab')[0].innerHTML = '<i class="fa-solid fa-video"></i> ' + t.tabVideo;
+            document.querySelectorAll('.tab')[1].innerHTML = '<i class="fa-solid fa-music"></i> ' + t.tabAudio;
+            document.querySelectorAll('thead th')[0].textContent = t.thQuality;
+            document.querySelectorAll('thead th')[1].textContent = t.thFormat;
+            document.querySelectorAll('thead th')[2].textContent = t.thSize;
+            document.querySelectorAll('thead th')[3].textContent = t.thAction;
+
+            // Atualizar steps
+            document.querySelector('.steps-wrap .section-title').innerHTML = t.stepsTitle;
+            document.querySelectorAll('.step h3')[0].textContent = t.step1Title;
+            document.querySelectorAll('.step p')[0].textContent = t.step1Desc;
+            document.querySelectorAll('.step h3')[1].textContent = t.step2Title;
+            document.querySelectorAll('.step p')[1].textContent = t.step2Desc;
+            document.querySelectorAll('.step h3')[2].textContent = t.step3Title;
+            document.querySelectorAll('.step p')[2].textContent = t.step3Desc;
+
+            // Atualizar platforms
+            document.querySelector('.platforms-title').textContent = t.platformsTitle;
+
+            // Atualizar features
+            document.querySelectorAll('.feature-text h4')[0].textContent = t.feature1Title;
+            document.querySelectorAll('.feature-text p')[0].textContent = t.feature1Desc;
+            document.querySelectorAll('.feature-text h4')[1].textContent = t.feature2Title;
+            document.querySelectorAll('.feature-text p')[1].textContent = t.feature2Desc;
+            document.querySelectorAll('.feature-text h4')[2].textContent = t.feature3Title;
+            document.querySelectorAll('.feature-text p')[2].textContent = t.feature3Desc;
+            document.querySelectorAll('.feature-text h4')[3].textContent = t.feature4Title;
+            document.querySelectorAll('.feature-text p')[3].textContent = t.feature4Desc;
+
+            // Atualizar about
+            document.querySelector('.about-container h2').innerHTML = t.aboutTitle;
+            document.querySelector('.about-container > p').textContent = t.aboutDesc;
+            document.querySelectorAll('.about-item h4')[0].textContent = t.about1Title;
+            document.querySelectorAll('.about-item p')[0].textContent = t.about1Desc;
+            document.querySelectorAll('.about-item h4')[1].textContent = t.about2Title;
+            document.querySelectorAll('.about-item p')[1].textContent = t.about2Desc;
+
+            // Atualizar device
+            document.querySelector('.device-text h4').textContent = t.deviceTitle;
+            document.querySelector('.device-text p').textContent = t.deviceDesc;
+
+            // Atualizar FAQ
+            document.querySelector('.faq-container').previousElementSibling.innerHTML = t.faqTitle;
+            document.querySelectorAll('.faq-item summary')[0].textContent = t.faq1Q;
+            document.querySelectorAll('.faq-item p')[0].textContent = t.faq1A;
+            document.querySelectorAll('.faq-item summary')[1].textContent = t.faq2Q;
+            document.querySelectorAll('.faq-item p')[1].textContent = t.faq2A;
+            document.querySelectorAll('.faq-item summary')[2].textContent = t.faq3Q;
+            document.querySelectorAll('.faq-item p')[2].textContent = t.faq3A;
+            document.querySelectorAll('.faq-item summary')[3].textContent = t.faq4Q;
+            document.querySelectorAll('.faq-item p')[3].textContent = t.faq4A;
+            document.querySelectorAll('.faq-item summary')[4].textContent = t.faq5Q;
+            document.querySelectorAll('.faq-item p')[4].textContent = t.faq5A;
+
+            // Atualizar footer
+            document.querySelector('.footer-brand p').textContent = t.footerDesc;
+            document.querySelectorAll('.footer-col h4')[0].textContent = t.footerTools;
+            document.querySelectorAll('.footer-col h4')[1].textContent = t.footerSupport;
+            document.querySelectorAll('.footer-col h4')[2].textContent = t.footerLegal;
+            document.querySelectorAll('.footer-col ul li a')[0].textContent = t.footerLink1;
+            document.querySelectorAll('.footer-col ul li a')[1].textContent = t.footerLink2;
+            document.querySelectorAll('.footer-col ul li a')[2].textContent = t.footerLink3;
+            document.querySelectorAll('.footer-col ul li a')[3].textContent = t.footerLink4;
+            document.querySelectorAll('.footer-col ul li a')[4].textContent = t.footerLink5;
+            document.querySelectorAll('.footer-col ul li a')[5].textContent = t.footerLink6;
+            document.querySelectorAll('.footer-col ul li a')[6].textContent = t.footerLink7;
+            document.querySelectorAll('.footer-col ul li a')[7].textContent = t.footerLink8;
+            document.querySelectorAll('.footer-col ul li a')[8].textContent = t.footerLink9;
+            document.querySelector('.footer-disclaimer').textContent = t.footerDisclaimer;
+            document.querySelector('.footer-copyright').textContent = t.footerCopyright;
+
+            // Atualizar botão de idioma
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+
+            // Atualizar opção ativa no dropdown
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+
+            // Fechar dropdown
+            document.getElementById('langDropdown').classList.remove('show');
+        }
+
+        // Toggle dropdown
+        document.getElementById('langSelect').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('langDropdown').classList.toggle('show');
+        });
+
+        // Selecionar idioma
+        document.querySelectorAll('.lang-option').forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                e.stopPropagation();
+                setLanguage(opt.dataset.lang);
+            });
+        });
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', () => {
+            document.getElementById('langDropdown').classList.remove('show');
+        });
+
+        // Inicializar com PT
+        setLanguage('pt');
+    </script>
+</body>
+</html>
