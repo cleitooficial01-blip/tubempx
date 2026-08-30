@@ -20,7 +20,7 @@ def get_video_formats(info):
     seen_qualities = set()
 
     for f in info.get('formats', []):
-        if f.get('vcodec') != 'none' and f.get('acodec') == 'none':
+        if f.get('vcodec') != 'none':
             height = f.get('height')
             if height and height not in seen_qualities:
                 seen_qualities.add(height)
