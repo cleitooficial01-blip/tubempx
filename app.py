@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file
+from flask import Flask, render_template, request, jsonify, send_file, Response
 import yt_dlp
 import os
 import re
@@ -9,6 +9,33 @@ app = Flask(__name__)
 # Pasta para downloads temporários
 DOWNLOAD_FOLDER = os.path.join(os.getcwd(), 'downloads')
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+
+@app.route('/robots.txt')
+def robots_txt():
+    """Serve o arquivo robots.txt para crawlers"""
+    robots_content = """User-agent: *
+Allow: /
+Disallow: /downloads/
+Disallow: /get_video_info
+Disallow: /download
+
+Sitemap: https://tubempx.com/sitemap.xml
+"""
+    return Response(robots_content, mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    """Serve o sitemap.xml para crawlers"""
+    sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://tubempx.com/</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>"""
+    return Response(sitemap_content, mimetype='application/xml')
 
 def sanitize_filename(filename):
     """Remove caracteres inválidos do nome do arquivo"""

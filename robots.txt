@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /downloads/
+Disallow: /get_video_info
+Disallow: /download
+
+Sitemap: https://tubempx.com/sitemap.xml
