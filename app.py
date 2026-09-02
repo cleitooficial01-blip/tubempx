@@ -4,6 +4,28 @@ import os
 import re
 from pathlib import Path
 
+# Try to load cookies from browser environment
+COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
+
+def get_ydl_opts(url=None):
+    """Configura yt-dlp para evitar bloqueio de bot usando client Android"""
+    base_opts = {
+        'quiet': True,
+        'no_warnings': True,
+        'http_headers': {
+            'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip',
+            'Accept-Language': 'en-US,en;q=0.9',
+        },
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios'],
+                'skip': ['hls', 'dash'],
+            }
+        },
+    }
+
+    return base_opts
+
 app = Flask(__name__)
 
 # Pasta para downloads temporários
@@ -82,21 +104,7 @@ def get_audio_formats(info):
 
 def handle_single_video(info, url):
     """Processa informações de um único vídeo"""
-    # Obter formatos completos
-    ydl_opts = {
-        'quiet': True,
-        'no_warnings': True,
-        'age_limit': None,
-        'http_headers': {
-            'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
-            'Accept-Language': 'en-US,en;q=0.9',
-        },
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android'],
-            }
-        },
-    }
+    ydl_opts = get_ydl_opts(url)
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         full_info = ydl.extract_info(url, download=False)
 
@@ -151,21 +159,7 @@ def get_video_info():
             return jsonify({'error': 'URL não fornecida'}), 400
 
         # Configuração do yt-dlp para obter informações
-        ydl_opts = {
-            'quiet': True,
-            'no_warnings': True,
-            'extract_flat': 'in_playlist',
-            'age_limit': None,
-            'http_headers': {
-                'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
-                'Accept-Language': 'en-US,en;q=0.9',
-            },
-            'extractor_args': {
-                'youtube': {
-                    'player_client': ['android'],
-                }
-            },
-        }
+        ydl_opts = get_ydl_opts(url)
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -193,8 +187,10 @@ def download():
             return jsonify({'error': 'URL não fornecida'}), 400
 
         # Configuração do yt-dlp para download
+        ydl_opts = get_ydl_opts(url)
+
         if download_type == 'audio':
-            ydl_opts = {
+            ydl_opts.update({
                 'format': 'bestaudio/best',
                 'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
                 'postprocessors': [{
@@ -202,50 +198,20 @@ def download():
                     'preferredcodec': 'mp3',
                     'preferredquality': '192',
                 }],
-                'quiet': True,
-                'http_headers': {
-                    'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                },
-                'extractor_args': {
-                    'youtube': {
-                        'player_client': ['android'],
-                    }
-                },
-            }
+            })
         else:
             if format_id:
-                ydl_opts = {
+                ydl_opts.update({
                     'format': f'{format_id}+bestaudio/best',
                     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
                     'merge_output_format': 'mp4',
-                    'quiet': True,
-                    'http_headers': {
-                        'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
-                        'Accept-Language': 'en-US,en;q=0.9',
-                    },
-                    'extractor_args': {
-                        'youtube': {
-                            'player_client': ['android'],
-                        }
-                    },
-                }
+                })
             else:
-                ydl_opts = {
+                ydl_opts.update({
                     'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
                     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
                     'merge_output_format': 'mp4',
-                    'quiet': True,
-                    'http_headers': {
-                        'User-Agent': 'com.google.android.youtube/19.02.39 (Linux; U; Android 14) gzip',
-                        'Accept-Language': 'en-US,en;q=0.9',
-                    },
-                    'extractor_args': {
-                        'youtube': {
-                            'player_client': ['android'],
-                        }
-                    },
-                }
+                })
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)

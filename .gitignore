@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# Downloads
+downloads/*.mp4
+downloads/*.mp3
+downloads/*.webm
+!downloads/.gitkeep
+
+# Cookies
+cookies.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flask
+instance/
+.webassets-cache
