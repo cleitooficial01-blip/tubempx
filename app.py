@@ -8,21 +8,29 @@ from pathlib import Path
 COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
 
 def get_ydl_opts(url=None):
-    """Configura yt-dlp para evitar bloqueio de bot usando client Android"""
+    """Configura yt-dlp com múltiplas estratégias para evitar bloqueio do YouTube"""
     base_opts = {
         'quiet': True,
         'no_warnings': True,
         'http_headers': {
             'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip',
             'Accept-Language': 'en-US,en;q=0.9',
+            'X-Youtube-Client-Name': '3',
+            'X-Youtube-Client-Version': '19.09.37',
         },
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'ios'],
+                'player_client': ['android', 'ios', 'android_creator'],
                 'skip': ['hls', 'dash'],
             }
         },
+        'socket_timeout': 30,
+        'retries': 3,
     }
+
+    # Se tiver arquivo cookies.txt (exportado do navegador), usa ele
+    if os.path.exists(COOKIES_FILE):
+        base_opts['cookiefile'] = COOKIES_FILE
 
     return base_opts
 
