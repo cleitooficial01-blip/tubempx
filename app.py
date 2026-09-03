@@ -230,8 +230,18 @@ def debug_cookies():
         'cookies_file_exists': os.path.exists(COOKIES_FILE),
         'cookies_file_path': COOKIES_FILE,
         'tmp_cookies_exists': os.path.exists('/tmp/cookies.txt'),
+        'tmp_cookies_from_env_exists': os.path.exists('/tmp/cookies_from_env.txt'),
         'render_env': os.environ.get('RENDER', 'Not set'),
+        'tmp_dir_writable': os.access('/tmp', os.W_OK),
     }
+
+    # Listar arquivos em /tmp
+    try:
+        tmp_files = os.listdir('/tmp')
+        debug_info['tmp_files_count'] = len(tmp_files)
+        debug_info['tmp_cookie_files'] = [f for f in tmp_files if 'cookie' in f.lower()]
+    except Exception as e:
+        debug_info['tmp_list_error'] = str(e)
 
     # Tentar carregar cookies como faz o get_ydl_opts
     env_cookies = os.environ.get('YOUTUBE_COOKIES')
