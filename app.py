@@ -202,6 +202,33 @@ def get_video_info():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/debug/cookies')
+def debug_cookies():
+    """Endpoint de debug para verificar se cookies estão carregando"""
+    import base64
+
+    debug_info = {
+        'env_youtube_cookies_exists': 'YOUTUBE_COOKIES' in os.environ,
+        'env_youtube_cookies_length': len(os.environ.get('YOUTUBE_COOKIES', '')) if 'YOUTUBE_COOKIES' in os.environ else 0,
+        'cookies_file_exists': os.path.exists(COOKIES_FILE),
+        'cookies_file_path': COOKIES_FILE,
+        'tmp_cookies_exists': os.path.exists('/tmp/cookies.txt'),
+        'render_env': os.environ.get('RENDER', 'Not set'),
+    }
+
+    # Tentar carregar cookies como faz o get_ydl_opts
+    env_cookies = os.environ.get('YOUTUBE_COOKIES')
+    if env_cookies:
+        try:
+            cookies_content = base64.b64decode(env_cookies).decode('utf-8')
+            debug_info['cookies_decode_success'] = True
+            debug_info['cookies_lines'] = len(cookies_content.split('\n'))
+        except Exception as e:
+            debug_info['cookies_decode_success'] = False
+            debug_info['cookies_decode_error'] = str(e)
+
+    return jsonify(debug_info)
+
 @app.route('/admin/cookies')
 def admin_cookies():
     """Página de upload de cookies"""
