@@ -9,27 +9,24 @@ COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies
 
 def get_ydl_opts(url=None):
     """Configura yt-dlp com múltiplas estratégias para evitar bloqueio do YouTube"""
+    has_cookies = os.path.exists(COOKIES_FILE)
+
     base_opts = {
-        'quiet': True,
-        'no_warnings': True,
-        'http_headers': {
-            'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'X-Youtube-Client-Name': '3',
-            'X-Youtube-Client-Version': '19.09.37',
-        },
+        'quiet': False,  # Mostrar avisos para debug
+        'no_warnings': False,
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'ios', 'android_creator'],
-                'skip': ['hls', 'dash'],
+                # Sempre usar múltiplos clients - fallback automático se um falhar
+                'player_client': ['ios', 'android', 'web'],
             }
         },
-        'socket_timeout': 30,
-        'retries': 3,
+        'socket_timeout': 60,
+        'retries': 5,
+        'fragment_retries': 5,
     }
 
-    # Se tiver arquivo cookies.txt (exportado do navegador), usa ele
-    if os.path.exists(COOKIES_FILE):
+    # Sempre tentar usar cookies se existir (mesmo que expirados, ajuda)
+    if has_cookies:
         base_opts['cookiefile'] = COOKIES_FILE
 
     return base_opts
@@ -112,20 +109,17 @@ def get_audio_formats(info):
 
 def handle_single_video(info, url):
     """Processa informações de um único vídeo"""
-    ydl_opts = get_ydl_opts(url)
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        full_info = ydl.extract_info(url, download=False)
-
-        return jsonify({
-            'success': True,
-            'type': 'video',
-            'title': full_info.get('title', 'Sem título'),
-            'duration': full_info.get('duration', 0),
-            'views': full_info.get('view_count', 0),
-            'thumbnail': full_info.get('thumbnail', ''),
-            'formats': get_video_formats(full_info),
-            'audio_formats': get_audio_formats(full_info)
-        })
+    # Usa o info já extraído - não fazer extract_info() de novo!
+    return jsonify({
+        'success': True,
+        'type': 'video',
+        'title': info.get('title', 'Sem título'),
+        'duration': info.get('duration', 0),
+        'views': info.get('view_count', 0),
+        'thumbnail': info.get('thumbnail', ''),
+        'formats': get_video_formats(info),
+        'audio_formats': get_audio_formats(info)
+    })
 
 def handle_playlist(info, url):
     """Processa informações de uma playlist"""
@@ -178,6 +172,37 @@ def get_video_info():
 
             # Se for vídeo único, processar normalmente
             return handle_single_video(info, url)
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/cookies')
+def admin_cookies():
+    """Página de upload de cookies"""
+    return send_file('upload_cookies.html')
+
+@app.route('/upload_cookies', methods=['POST'])
+def upload_cookies():
+    """Endpoint para fazer upload do arquivo cookies.txt (protegido por senha)"""
+    try:
+        # Verificar senha de admin (defina uma senha forte!)
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'mudar_senha_forte_aqui')
+        provided_password = request.form.get('password', '')
+
+        if provided_password != admin_password:
+            return jsonify({'error': 'Senha incorreta'}), 403
+
+        # Verificar se o arquivo foi enviado
+        if 'file' not in request.files:
+            return jsonify({'error': 'Nenhum arquivo enviado'}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'Arquivo vazio'}), 400
+
+        # Salvar o arquivo cookies.txt
+        file.save(COOKIES_FILE)
+        return jsonify({'success': True, 'message': 'Cookies salvos com sucesso!'})
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
