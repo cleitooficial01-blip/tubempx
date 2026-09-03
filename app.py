@@ -9,7 +9,17 @@ COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies
 
 def get_ydl_opts(url=None):
     """Configura yt-dlp com múltiplas estratégias para evitar bloqueio do YouTube"""
-    has_cookies = os.path.exists(COOKIES_FILE)
+    # No Render, usar /tmp para arquivos temporários (única pasta gravável)
+    if os.environ.get('RENDER'):
+        cookies_path = '/tmp/cookies.txt'
+        # Copiar cookies para /tmp se existir no diretório do app
+        if os.path.exists(COOKIES_FILE) and not os.path.exists(cookies_path):
+            import shutil
+            shutil.copy(COOKIES_FILE, cookies_path)
+    else:
+        cookies_path = COOKIES_FILE
+
+    has_cookies = os.path.exists(cookies_path)
 
     base_opts = {
         'quiet': False,  # Mostrar avisos para debug
@@ -27,7 +37,10 @@ def get_ydl_opts(url=None):
 
     # Sempre tentar usar cookies se existir (mesmo que expirados, ajuda)
     if has_cookies:
-        base_opts['cookiefile'] = COOKIES_FILE
+        base_opts['cookiefile'] = cookies_path
+        print(f'[DEBUG] Usando cookies de: {cookies_path}')
+    else:
+        print(f'[DEBUG] Cookies não encontrados em: {cookies_path}')
 
     return base_opts
 
@@ -200,8 +213,20 @@ def upload_cookies():
         if file.filename == '':
             return jsonify({'error': 'Arquivo vazio'}), 400
 
-        # Salvar o arquivo cookies.txt
+        # Salvar o arquivo cookies.txt no diretório principal
         file.save(COOKIES_FILE)
+
+        # No Render, também salvar em /tmp (única pasta gravável)
+        if os.environ.get('RENDER'):
+            tmp_cookies = '/tmp/cookies.txt'
+            file.seek(0)
+            with open(tmp_cookies, 'wb') as f:
+                f.write(file.read())
+            return jsonify({
+                'success': True,
+                'message': f'Cookies salvos! App: {COOKIES_FILE}, Tmp: {tmp_cookies}'
+            })
+
         return jsonify({'success': True, 'message': 'Cookies salvos com sucesso!'})
 
     except Exception as e:
