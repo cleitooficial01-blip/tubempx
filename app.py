@@ -9,24 +9,41 @@ COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies
 
 def get_ydl_opts(url=None):
     """Configura yt-dlp com múltiplas estratégias para evitar bloqueio do YouTube"""
-    # No Render, usar /tmp para arquivos temporários (única pasta gravável)
-    if os.environ.get('RENDER'):
-        cookies_path = '/tmp/cookies.txt'
-        # Copiar cookies para /tmp se existir no diretório do app
-        if os.path.exists(COOKIES_FILE) and not os.path.exists(cookies_path):
-            import shutil
-            shutil.copy(COOKIES_FILE, cookies_path)
-    else:
-        cookies_path = COOKIES_FILE
+    import base64
 
-    has_cookies = os.path.exists(cookies_path)
+    # Tentar carregar cookies de várias fontes
+    cookies_path = None
+
+    # 1. Variável de ambiente YOUTUBE_COOKIES (base64) - para Render
+    env_cookies = os.environ.get('YOUTUBE_COOKIES')
+    if env_cookies:
+        try:
+            cookies_content = base64.b64decode(env_cookies).decode('utf-8')
+            cookies_path = '/tmp/cookies_from_env.txt'
+            with open(cookies_path, 'w') as f:
+                f.write(cookies_content)
+            print(f'[DEBUG] Cookies carregados de YOUTUBE_COOKIES (env)')
+        except Exception as e:
+            print(f'[DEBUG] Erro ao carregar YOUTUBE_COOKIES: {e}')
+
+    # 2. Arquivo em /tmp (Render após upload)
+    if not cookies_path and os.path.exists('/tmp/cookies.txt'):
+        cookies_path = '/tmp/cookies.txt'
+        print(f'[DEBUG] Usando cookies de /tmp/cookies.txt')
+
+    # 3. Arquivo local (desenvolvimento)
+    if not cookies_path and os.path.exists(COOKIES_FILE):
+        cookies_path = COOKIES_FILE
+        print(f'[DEBUG] Usando cookies de {COOKIES_FILE}')
+
+    if not cookies_path:
+        print(f'[DEBUG] Nenhum cookie encontrado - usando apenas player clients')
 
     base_opts = {
-        'quiet': False,  # Mostrar avisos para debug
+        'quiet': False,
         'no_warnings': False,
         'extractor_args': {
             'youtube': {
-                # Sempre usar múltiplos clients - fallback automático se um falhar
                 'player_client': ['ios', 'android', 'web'],
             }
         },
@@ -35,12 +52,8 @@ def get_ydl_opts(url=None):
         'fragment_retries': 5,
     }
 
-    # Sempre tentar usar cookies se existir (mesmo que expirados, ajuda)
-    if has_cookies:
+    if cookies_path:
         base_opts['cookiefile'] = cookies_path
-        print(f'[DEBUG] Usando cookies de: {cookies_path}')
-    else:
-        print(f'[DEBUG] Cookies não encontrados em: {cookies_path}')
 
     return base_opts
 
