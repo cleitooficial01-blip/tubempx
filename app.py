@@ -63,6 +63,23 @@ app = Flask(__name__)
 DOWNLOAD_FOLDER = os.path.join(os.getcwd(), 'downloads')
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
+# Inicializar cookies na startup (se estiver no Render com YOUTUBE_COOKIES)
+def init_cookies():
+    """Inicializa cookies de variável de ambiente na startup"""
+    import base64
+    env_cookies = os.environ.get('YOUTUBE_COOKIES')
+    if env_cookies:
+        try:
+            cookies_content = base64.b64decode(env_cookies).decode('utf-8')
+            cookies_path = '/tmp/cookies_from_env.txt'
+            with open(cookies_path, 'w') as f:
+                f.write(cookies_content)
+            print(f'[STARTUP] Cookies carregados de YOUTUBE_COOKIES para {cookies_path}')
+        except Exception as e:
+            print(f'[STARTUP] Erro ao inicializar cookies: {e}')
+
+init_cookies()
+
 @app.route('/robots.txt')
 def robots_txt():
     """Serve o arquivo robots.txt para crawlers"""
