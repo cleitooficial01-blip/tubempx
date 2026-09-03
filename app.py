@@ -9,30 +9,21 @@ COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies
 
 def get_ydl_opts(url=None):
     """Configura yt-dlp com múltiplas estratégias para evitar bloqueio do YouTube"""
-    import base64
-
-    # Tentar carregar cookies de várias fontes
+    # Tentar carregar cookies de várias fontes (ordem de prioridade)
     cookies_path = None
 
-    # 1. Variável de ambiente YOUTUBE_COOKIES (base64) - para Render
-    env_cookies = os.environ.get('YOUTUBE_COOKIES')
-    if env_cookies:
-        try:
-            cookies_content = base64.b64decode(env_cookies).decode('utf-8')
-            cookies_path = '/tmp/cookies_from_env.txt'
-            with open(cookies_path, 'w') as f:
-                f.write(cookies_content)
-            print(f'[DEBUG] Cookies carregados de YOUTUBE_COOKIES (env)')
-        except Exception as e:
-            print(f'[DEBUG] Erro ao carregar YOUTUBE_COOKIES: {e}')
+    # 1. Arquivo criado na startup de YOUTUBE_COOKIES (Render)
+    if os.path.exists('/tmp/cookies_from_env.txt'):
+        cookies_path = '/tmp/cookies_from_env.txt'
+        print(f'[DEBUG] Usando cookies de /tmp/cookies_from_env.txt')
 
-    # 2. Arquivo em /tmp (Render após upload)
-    if not cookies_path and os.path.exists('/tmp/cookies.txt'):
+    # 2. Arquivo em /tmp (Render após upload manual)
+    elif os.path.exists('/tmp/cookies.txt'):
         cookies_path = '/tmp/cookies.txt'
         print(f'[DEBUG] Usando cookies de /tmp/cookies.txt')
 
     # 3. Arquivo local (desenvolvimento)
-    if not cookies_path and os.path.exists(COOKIES_FILE):
+    elif os.path.exists(COOKIES_FILE):
         cookies_path = COOKIES_FILE
         print(f'[DEBUG] Usando cookies de {COOKIES_FILE}')
 
