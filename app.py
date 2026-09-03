@@ -209,7 +209,10 @@ def upload_cookies():
 
 @app.route('/download', methods=['POST'])
 def download():
-    """Baixa o vídeo do YouTube"""
+    """Baixa o vídeo do YouTube e faz streaming direto para o usuário"""
+    import glob
+    import threading
+
     try:
         data = request.get_json()
         url = data.get('url', '').strip()
@@ -219,7 +222,9 @@ def download():
         if not url:
             return jsonify({'error': 'URL não fornecida'}), 400
 
-        # Configuração do yt-dlp para download
+        # Garantir que a pasta de downloads existe
+        os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
+
         ydl_opts = get_ydl_opts(url)
 
         if download_type == 'audio':
@@ -235,15 +240,14 @@ def download():
         else:
             if format_id:
                 ydl_opts.update({
-                    'format': f'{format_id}+bestaudio/best',
+                    'format': f'{format_id}+bestaudio[ext=m4a]/{format_id}/best[ext=mp4]/best',
                     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
                     'merge_output_format': 'mp4',
                 })
             else:
                 ydl_opts.update({
-                    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+                    'format': 'best[ext=mp4]/best',
                     'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
-                    'merge_output_format': 'mp4',
                 })
 
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -252,16 +256,37 @@ def download():
 
             # Se for áudio, o arquivo terá extensão .mp3
             if download_type == 'audio':
-                filename = filename.rsplit('.', 1)[0] + '.mp3'
+                base = filename.rsplit('.', 1)[0]
+                filename = base + '.mp3'
 
-            if os.path.exists(filename):
-                return send_file(
-                    filename,
-                    as_attachment=True,
-                    download_name=os.path.basename(filename)
-                )
-            else:
-                return jsonify({'error': 'Arquivo não encontrado'}), 404
+            # Se o arquivo exato não existir, procurar por arquivos com mesmo nome base
+            if not os.path.exists(filename):
+                base = os.path.splitext(filename)[0]
+                matches = glob.glob(f'{base}.*')
+                if matches:
+                    filename = matches[0]
+
+            if not os.path.exists(filename):
+                return jsonify({'error': f'Arquivo não encontrado após download: {os.path.basename(filename)}'}), 404
+
+            # Enviar arquivo e agendar limpeza após envio
+            response = send_file(
+                filename,
+                as_attachment=True,
+                download_name=os.path.basename(filename)
+            )
+
+            # Limpar arquivo temporário após envio (sem bloquear a resposta)
+            def cleanup(path):
+                try:
+                    if os.path.exists(path):
+                        os.remove(path)
+                except:
+                    pass
+
+            threading.Timer(30, cleanup, args=[filename]).start()
+
+            return response
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
